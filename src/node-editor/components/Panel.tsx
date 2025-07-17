@@ -1,7 +1,7 @@
 import { Panel } from "@xyflow/react";
 import type { JSX } from "react";
-import { useStore, type StoreState } from "../state";
 import { shallow } from "zustand/shallow";
+import { useStore, type StoreState } from "../state";
 
 const selector = (store: StoreState) => ({
   createNode: store.createNode,
@@ -12,8 +12,9 @@ export function NodePanel(): JSX.Element {
   const store = useStore(selector, shallow);
   return (
     <Panel position="top-right">
-      {Object.entries(store.nodeTypes).map(([k, _]) => (
+      {Object.entries(store.nodeTypes).map(([k, _], idx) => (
         <button
+          key={idx}
           className="btn bg-base-100 text-white"
           onClick={() => store.createNode(k)}
         >

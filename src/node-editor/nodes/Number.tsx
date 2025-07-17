@@ -1,9 +1,9 @@
 import { Handle, Position } from "@xyflow/react";
-import { shallow } from "zustand/shallow";
 import type { ChangeEvent, JSX } from "react";
+import { shallow } from "zustand/shallow";
 
-import { useStore, type StoreState } from "../../state";
-import { BaseNode } from "../../components/BaseNode";
+import { useStore, type StoreState } from "../state";
+import { BaseNode } from "./BaseNode";
 
 export interface NumberData {
   value: number;
@@ -24,14 +24,12 @@ export function Number({ id, data }: NumberProps): JSX.Element {
 
   return (
     <BaseNode name="Number" accentColor="bg-gray-400">
-      <label>
-        <input
-          className="nodrag input"
-          type="number"
-          value={data.value}
-          onChange={setValue}
-        />
-      </label>
+      <input
+        className="nodrag input"
+        type="number"
+        value={data.value}
+        onChange={setValue}
+      />
 
       <Handle type="source" position={Position.Right} />
     </BaseNode>

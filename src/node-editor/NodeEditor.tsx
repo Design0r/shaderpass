@@ -1,9 +1,9 @@
-import { type JSX } from "react";
-import { ReactFlow, Background } from "@xyflow/react";
+import { Background, Controls, MiniMap, ReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useStore, type StoreState } from "./state";
+import { type JSX } from "react";
 import { shallow } from "zustand/shallow";
 import { NodePanel } from "./components/Panel";
+import { useStore, type StoreState } from "./state";
 
 const selector = (selector: StoreState) => ({
   nodes: selector.nodes,
@@ -25,9 +25,12 @@ export function NodeEditor(): JSX.Element {
       onEdgesChange={store.onEdgesChange}
       onConnect={store.onConnect}
       nodeTypes={store.nodeTypes}
+      proOptions={{ hideAttribution: true }}
       fitView
     >
       <NodePanel />
+      <Controls />
+      <MiniMap />
       <Background />
     </ReactFlow>
   );

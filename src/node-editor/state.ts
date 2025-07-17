@@ -1,16 +1,17 @@
 import {
-  applyNodeChanges,
   applyEdgeChanges,
-  type Node,
+  applyNodeChanges,
   type Edge,
-  type NodeChange,
   type EdgeChange,
+  type Node,
+  type NodeChange,
   type NodeTypes,
 } from "@xyflow/react";
 import { nanoid } from "nanoid";
 import { createWithEqualityFn } from "zustand/traditional";
-import Number from "./nodes/constants/Number";
-import { Output } from "./nodes/Output";
+import Number from "./nodes/Number";
+import { ShaderOutput } from "./nodes/Output";
+import String from "./nodes/String";
 
 export interface StoreState {
   nodes: Node[];
@@ -27,7 +28,7 @@ export interface StoreState {
 export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
   nodes: [] as Node[],
   edges: [] as Edge[],
-  nodeTypes: { output: Output, number: Number },
+  nodeTypes: { shaderOutput: ShaderOutput, number: Number, string: String },
 
   onNodesChange(changes) {
     set({
@@ -55,7 +56,7 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
               ...node,
               data: { ...node.data, ...data },
             }
-          : node,
+          : node
       ),
     });
   },
@@ -67,6 +68,16 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
     switch (type) {
       case "number": {
         const data = { value: 0 };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "string": {
+        const data = { value: "" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "shaderOutput": {
+        const data = { value: "" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }

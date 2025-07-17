@@ -10,12 +10,16 @@ interface BaseNodeProps extends DivProps {
 export function BaseNode({
   name,
   accentColor = "bg-gray-400",
+  className = "",
   children,
   ...props
 }: BaseNodeProps): JSX.Element {
   return (
-    <div className="rounded-xl border-2 border-white bg-base-100" {...props}>
-      <div className={"rounded-t-lg " + accentColor}>
+    <div
+      className={`${className} rounded-xl border-2 border-white bg-base-100`}
+      {...props}
+    >
+      <div className={`${accentColor} rounded-t-lg`}>
         <h2 className="p-1 text-white">{name}</h2>
       </div>
       <div className="p-2">{children}</div>
