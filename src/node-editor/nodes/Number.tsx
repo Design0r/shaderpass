@@ -2,7 +2,7 @@ import { Handle, Position } from "@xyflow/react";
 import type { ChangeEvent, JSX } from "react";
 import { shallow } from "zustand/shallow";
 
-import { useStore, type StoreState } from "../state";
+import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "./BaseNode";
 
 export interface NumberData {
@@ -16,7 +16,7 @@ export interface NumberProps {
 
 const selector = (id: string) => (store: StoreState) => ({
   setValue: (e: ChangeEvent<HTMLInputElement>) =>
-    store.updateNode(id, { value: e.target.value }),
+    store.updateNode(id, { value: parseFloat(e.target.value) }),
 });
 
 export function Number({ id, data }: NumberProps): JSX.Element {

@@ -18,13 +18,13 @@ export function ShaderOutput(_: OutputProps): JSX.Element {
         <span>Fragment Shader</span>
       </div>
       <Handle
-        id={"Vertex"}
+        id={"vertex"}
         style={{ top: "55%" }}
         type="target"
         position={Position.Left}
       />
       <Handle
-        id={"Fragment"}
+        id={"fragment"}
         style={{ top: "75%" }}
         className="mt-1"
         type="target"

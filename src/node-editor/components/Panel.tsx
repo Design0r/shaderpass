@@ -1,7 +1,7 @@
 import { Panel } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
-import { useStore, type StoreState } from "../state";
+import { useStore, type StoreState } from "../../state";
 
 const selector = (store: StoreState) => ({
   createNode: store.createNode,

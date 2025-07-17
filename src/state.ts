@@ -7,11 +7,15 @@ import {
   type NodeChange,
   type NodeTypes,
 } from "@xyflow/react";
-import { nanoid } from "nanoid";
+import { customAlphabet, nanoid } from "nanoid";
 import { createWithEqualityFn } from "zustand/traditional";
-import Number from "./nodes/Number";
-import { ShaderOutput } from "./nodes/Output";
-import String from "./nodes/String";
+import Number from "./node-editor/nodes/Number";
+import { ShaderOutput } from "./node-editor/nodes/Output";
+import String from "./node-editor/nodes/String";
+import Math from "./node-editor/nodes/Math";
+import Vec2 from "./node-editor/nodes/Vec2";
+import { Vec3 } from "./node-editor/nodes/Vec3";
+import { Vec4 } from "./node-editor/nodes/Vec4";
 
 export interface StoreState {
   nodes: Node[];
@@ -25,10 +29,23 @@ export interface StoreState {
   createNode: (type: string) => void;
 }
 
+const idGen = customAlphabet(
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  10,
+);
+
 export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
   nodes: [] as Node[],
   edges: [] as Edge[],
-  nodeTypes: { shaderOutput: ShaderOutput, number: Number, string: String },
+  nodeTypes: {
+    shaderOutput: ShaderOutput,
+    number: Number,
+    string: String,
+    math: Math,
+    vec2: Vec2,
+    vec3: Vec3,
+    vec4: Vec4,
+  },
 
   onNodesChange(changes) {
     set({
@@ -56,13 +73,13 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
               ...node,
               data: { ...node.data, ...data },
             }
-          : node
+          : node,
       ),
     });
   },
 
   createNode(type: string) {
-    const id = nanoid();
+    const id = idGen();
     const position = { x: 0, y: 0 };
 
     switch (type) {
@@ -81,6 +98,36 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
+      case "math": {
+        const data = { operation: "+" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "vec2": {
+        const data = { x: 0, y: 0 };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "vec3": {
+        const data = { r: 0, g: 0, b: 0 };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "vec4": {
+        const data = { r: "0.0", g: "0.0", b: "0.0", a: "0.0" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
     }
   },
 }));
+
+export interface SerializedState {
+  nodes: Node[];
+  edges: Edge[];
+}
+
+export function serializeState(): SerializedState {
+  const store = useStore.getState();
+  return { nodes: store.nodes, edges: store.edges };
+}

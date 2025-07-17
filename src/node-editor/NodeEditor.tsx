@@ -1,9 +1,10 @@
-import { Background, Controls, MiniMap, ReactFlow } from "@xyflow/react";
+import { Background, Controls, MiniMap, Panel, ReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { type JSX } from "react";
 import { shallow } from "zustand/shallow";
 import { NodePanel } from "./components/Panel";
-import { useStore, type StoreState } from "./state";
+import { serializeState, useStore, type StoreState } from "../state";
+import { ShaderGenerator } from "../threejs/ast";
 
 const selector = (selector: StoreState) => ({
   nodes: selector.nodes,
@@ -28,6 +29,26 @@ export function NodeEditor(): JSX.Element {
       proOptions={{ hideAttribution: true }}
       fitView
     >
+      <Panel position="top-left">
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            console.log(serializeState());
+          }}
+        >
+          Export
+        </button>
+        <button
+          className="btn btn-error"
+          onClick={() => {
+            const s = new ShaderGenerator(store.nodes, store.edges).generate();
+            console.log(s.vertex);
+            console.log(s.fragment);
+          }}
+        >
+          Generate
+        </button>
+      </Panel>
       <NodePanel />
       <Controls />
       <MiniMap />

@@ -2,7 +2,7 @@ import { Handle, Position } from "@xyflow/react";
 import type { ChangeEvent, JSX } from "react";
 import { shallow } from "zustand/shallow";
 
-import { useStore, type StoreState } from "../state";
+import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "./BaseNode";
 
 export interface StringData {
