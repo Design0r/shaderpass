@@ -1,14 +1,24 @@
-import { NodeEditor } from "./node-editor/NodeEditor";
-import { Viewport } from "./threejs/Viewport";
+import { AttributeEditor } from "./components/AttributeEditor";
+import { NodeEditor } from "./components/NodeEditor";
+import { NodeExplorer } from "./components/NodeExplorer";
+import { Viewport } from "./components/Viewport";
 
 function App() {
   return (
-    <div className="w-full h-full grid grid-cols-2">
-      <div className="w-full h-full bg-base-300">
+    <div className="w-full h-full grid grid-cols-12">
+      <div className="col-span-2 bg-base-100">
+        <NodeExplorer />
+      </div>
+      <div className="col-span-8 bg-base-300">
         <NodeEditor />
       </div>
-      <div className="w-full h-full bg-base-100">
-        <Viewport />
+      <div className="col-span-2 grid grid-rows-4 bg-base-300">
+        <div className="row-span-1">
+          <Viewport />
+        </div>
+        <div className="row-span-3">
+          <AttributeEditor />
+        </div>
       </div>
     </div>
   );

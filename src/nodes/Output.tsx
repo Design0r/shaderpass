@@ -2,6 +2,8 @@ import { Handle, Position } from "@xyflow/react";
 import type { JSX } from "react";
 
 import { BaseNode } from "./BaseNode";
+import { useStore, type StoreState } from "../state";
+import { shallow } from "zustand/shallow";
 
 export interface OutputData {}
 
@@ -10,12 +12,17 @@ export interface OutputProps {
   data: OutputData;
 }
 
-export function ShaderOutput(_: OutputProps): JSX.Element {
+const selector = (id: string) => (store: StoreState) => ({
+  isSelected: store.selectedNode?.id === id,
+});
+
+export function ShaderOutput({ id }: OutputProps): JSX.Element {
+  const { isSelected } = useStore(selector(id), shallow);
   return (
-    <BaseNode name="Output" accentColor="bg-gray-400">
+    <BaseNode isSelected={isSelected} name="Output" accentColor="bg-gray-400">
       <div className="flex flex-col">
-        <span>Vertex Shader</span>
-        <span>Fragment Shader</span>
+        <span>Vertex</span>
+        <span>Fragment</span>
       </div>
       <Handle
         id={"vertex"}

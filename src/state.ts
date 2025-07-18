@@ -9,24 +9,27 @@ import {
 } from "@xyflow/react";
 import { customAlphabet, nanoid } from "nanoid";
 import { createWithEqualityFn } from "zustand/traditional";
-import Number from "./node-editor/nodes/Number";
-import { ShaderOutput } from "./node-editor/nodes/Output";
-import String from "./node-editor/nodes/String";
-import Math from "./node-editor/nodes/Math";
-import Vec2 from "./node-editor/nodes/Vec2";
-import { Vec3 } from "./node-editor/nodes/Vec3";
-import { Vec4 } from "./node-editor/nodes/Vec4";
+import { NumberNode } from "./nodes/Number";
+import { ShaderOutput } from "./nodes/Output";
+import { String } from "./nodes/String";
+import { Math } from "./nodes/Math";
+import { Vec2 } from "./nodes/Vec2";
+import { Vec3 } from "./nodes/Vec3";
+import { Vec4 } from "./nodes/Vec4";
 
 export interface StoreState {
   nodes: Node[];
   edges: Edge[];
   nodeTypes: NodeTypes;
+  selectedNode: Node | undefined;
 
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   addEdge: (data: Omit<Edge, "id">) => void;
   updateNode: (id: Node["id"], data: Partial<Node["data"]>) => void;
   createNode: (type: string) => void;
+  selectNode: (id: Node["id"]) => void;
+  deselectNode: () => void;
 }
 
 const idGen = customAlphabet(
@@ -39,13 +42,14 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
   edges: [] as Edge[],
   nodeTypes: {
     shaderOutput: ShaderOutput,
-    number: Number,
+    number: NumberNode,
     string: String,
     math: Math,
     vec2: Vec2,
     vec3: Vec3,
     vec4: Vec4,
   },
+  selectedNode: undefined,
 
   onNodesChange(changes) {
     set({
@@ -76,6 +80,14 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
           : node,
       ),
     });
+  },
+
+  selectNode(id) {
+    set({ selectedNode: get().nodes.find((n) => n.id === id) });
+  },
+
+  deselectNode() {
+    set({ selectedNode: undefined });
   },
 
   createNode(type: string) {

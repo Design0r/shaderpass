@@ -1,17 +1,16 @@
-import { Panel } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
-import { useStore, type StoreState } from "../../state";
+import { useStore, type StoreState } from "../state";
 
 const selector = (store: StoreState) => ({
   createNode: store.createNode,
   nodeTypes: store.nodeTypes,
 });
 
-export function NodePanel(): JSX.Element {
+export function NodeExplorer(): JSX.Element {
   const store = useStore(selector, shallow);
   return (
-    <Panel position="top-right">
+    <div className="flex flex-col">
       {Object.entries(store.nodeTypes).map(([k, _], idx) => (
         <button
           key={idx}
@@ -21,6 +20,6 @@ export function NodePanel(): JSX.Element {
           {k.charAt(0).toUpperCase() + k.slice(1)}
         </button>
       ))}
-    </Panel>
+    </div>
   );
 }

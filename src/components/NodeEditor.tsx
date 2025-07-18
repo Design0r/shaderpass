@@ -1,10 +1,10 @@
 import { Background, Controls, MiniMap, Panel, ReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { type JSX } from "react";
+import { type JSX, type ReactElement } from "react";
 import { shallow } from "zustand/shallow";
-import { NodePanel } from "./components/Panel";
+import { NodePanel } from "./Panel";
 import { serializeState, useStore, type StoreState } from "../state";
-import { ShaderGenerator } from "../threejs/ast";
+import { ShaderGenerator } from "../shader/ast";
 
 const selector = (selector: StoreState) => ({
   nodes: selector.nodes,
@@ -13,9 +13,14 @@ const selector = (selector: StoreState) => ({
   onEdgesChange: selector.onEdgesChange,
   onConnect: selector.addEdge,
   nodeTypes: selector.nodeTypes,
+  selectNode: selector.selectNode,
 });
 
-export function NodeEditor(): JSX.Element {
+export function NodeEditor({
+  children,
+}: {
+  children?: ReactElement | ReactElement[] | undefined;
+}): JSX.Element {
   const store = useStore(selector, shallow);
 
   return (
@@ -27,6 +32,7 @@ export function NodeEditor(): JSX.Element {
       onConnect={store.onConnect}
       nodeTypes={store.nodeTypes}
       proOptions={{ hideAttribution: true }}
+      onNodeClick={(_, n) => store.selectNode(n.id)}
       fitView
     >
       <Panel position="top-left">
@@ -49,9 +55,9 @@ export function NodeEditor(): JSX.Element {
           Generate
         </button>
       </Panel>
-      <NodePanel />
       <Controls />
       <MiniMap />
+      {children}
       <Background />
     </ReactFlow>
   );

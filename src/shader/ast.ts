@@ -1,9 +1,9 @@
 import type { Edge, Node } from "@xyflow/react";
-import type { NumberData } from "../node-editor/nodes/Number";
-import type { MathData } from "../node-editor/nodes/Math";
-import type { Vec2Data } from "../node-editor/nodes/Vec2";
-import type { Vec3Data } from "../node-editor/nodes/Vec3";
-import type { Vec4Data } from "../node-editor/nodes/Vec4";
+import type { NumberData } from "../nodes/Number";
+import type { MathData } from "../nodes/Math";
+import type { Vec2Data } from "../nodes/Vec2";
+import type { Vec3Data } from "../nodes/Vec3";
+import type { Vec4Data } from "../nodes/Vec4";
 
 export class ShaderGenerator {
   private nodesById: Map<string, Node>;
