@@ -1,6 +1,8 @@
 import {
   applyEdgeChanges,
   applyNodeChanges,
+  reconnectEdge as rfReconnectEdge,
+  type Connection,
   type Edge,
   type EdgeChange,
   type Node,
@@ -24,7 +26,9 @@ export interface StoreState {
 
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
+  reconnectEdge: (oldEdge: Edge, connection: Connection) => void;
   addEdge: (data: Omit<Edge, "id">) => void;
+  removeEdge: (id: Edge["id"]) => void;
   updateNode: (id: Node["id"], data: Partial<Node["data"]>) => void;
   createNode: (type: string) => void;
   selectNode: (id: Node["id"]) => void;
@@ -63,10 +67,22 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
     });
   },
 
+  reconnectEdge(oldEdge, connection) {
+    set({
+      edges: rfReconnectEdge(oldEdge, connection, get().edges),
+    });
+  },
+
   addEdge(data) {
     const id = nanoid(6);
     const edge: Edge = { id, ...data };
     set({ edges: [edge, ...get().edges] });
+  },
+
+  removeEdge(id) {
+    set({
+      edges: get().edges.filter((e) => e.id !== id),
+    });
   },
 
   updateNode(id, data) {

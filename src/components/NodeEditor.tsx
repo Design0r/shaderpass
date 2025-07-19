@@ -1,6 +1,14 @@
-import { Background, Controls, MiniMap, Panel, ReactFlow } from "@xyflow/react";
+import {
+  Background,
+  Controls,
+  MiniMap,
+  Panel,
+  ReactFlow,
+  reconnectEdge,
+  type Connection,
+} from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { type JSX, type ReactElement } from "react";
+import { useCallback, useRef, type JSX, type ReactElement } from "react";
 import { shallow } from "zustand/shallow";
 import { serializeState, useStore, type StoreState } from "../state";
 
@@ -12,6 +20,8 @@ const selector = (selector: StoreState) => ({
   onConnect: selector.addEdge,
   nodeTypes: selector.nodeTypes,
   selectNode: selector.selectNode,
+  reconnectEdge: selector.reconnectEdge,
+  removeEdge: selector.removeEdge,
 });
 
 export function NodeEditor({
@@ -21,6 +31,30 @@ export function NodeEditor({
 }): JSX.Element {
   const store = useStore(selector, shallow);
 
+  const edgeReconnectSuccessful = useRef(true);
+
+  const onReconnectStart = useCallback(() => {
+    edgeReconnectSuccessful.current = false;
+  }, []);
+
+  const onReconnect = useCallback(
+    (oldEdge: any, connection: Connection) => {
+      edgeReconnectSuccessful.current = true;
+      store.reconnectEdge(oldEdge, connection);
+    },
+    [reconnectEdge],
+  );
+
+  const onReconnectEnd = useCallback(
+    (_: any, edge: any) => {
+      if (!edgeReconnectSuccessful.current) {
+        store.removeEdge(edge.id);
+      }
+      edgeReconnectSuccessful.current = true;
+    },
+    [store.removeEdge],
+  );
+
   return (
     <ReactFlow
       colorMode="dark"
@@ -28,6 +62,9 @@ export function NodeEditor({
       edges={store.edges}
       onNodesChange={store.onNodesChange}
       onEdgesChange={store.onEdgesChange}
+      onReconnectStart={onReconnectStart}
+      onReconnect={onReconnect}
+      onReconnectEnd={onReconnectEnd}
       onConnect={store.onConnect}
       nodeTypes={store.nodeTypes}
       proOptions={{ hideAttribution: true }}
