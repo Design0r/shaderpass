@@ -13,9 +13,7 @@ import { NumberNode } from "./nodes/Number";
 import { ShaderOutput } from "./nodes/Output";
 import { String } from "./nodes/String";
 import { Math } from "./nodes/Math";
-import { Vec2 } from "./nodes/Vec2";
-import { Vec3 } from "./nodes/Vec3";
-import { Vec4 } from "./nodes/Vec4";
+import { Vec2, Vec3, Vec4 } from "./nodes/Vec";
 
 export interface StoreState {
   nodes: Node[];
@@ -96,37 +94,37 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
 
     switch (type) {
       case "number": {
-        const data = { value: 0 };
+        const data = { name: "Number", value: 0 };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
       case "string": {
-        const data = { value: "" };
+        const data = { name: "String", value: "" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
       case "shaderOutput": {
-        const data = { value: "" };
+        const data = { name: "Material", value: "" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
       case "math": {
-        const data = { operation: "+" };
+        const data = { name: "Math", operation: "+" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
       case "vec2": {
-        const data = { x: 0, y: 0 };
+        const data = { name: "Vec2", x: 0, y: 0 };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
       case "vec3": {
-        const data = { r: 0, g: 0, b: 0 };
+        const data = { name: "Vec3", r: 0, g: 0, b: 0 };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
       case "vec4": {
-        const data = { r: "0.0", g: "0.0", b: "0.0", a: "0.0" };
+        const data = { name: "Vec4", r: "0.0", g: "0.0", b: "0.0", a: "0.0" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }

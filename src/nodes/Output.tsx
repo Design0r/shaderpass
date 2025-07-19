@@ -5,7 +5,9 @@ import { BaseNode } from "./BaseNode";
 import { useStore, type StoreState } from "../state";
 import { shallow } from "zustand/shallow";
 
-export interface OutputData {}
+export interface OutputData {
+  name: string;
+}
 
 export interface OutputProps {
   id: string;

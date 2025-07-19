@@ -6,6 +6,7 @@ import { useStore, type StoreState } from "../state";
 import { BaseNode } from "./BaseNode";
 
 export interface StringData {
+  name: string;
   value: string;
 }
 
