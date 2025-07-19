@@ -52,7 +52,6 @@ export function Vec2({ id }: Vec2Props): JSX.Element {
 }
 
 export interface Vec3Data {
-  name: string;
   r: number;
   g: number;
   b: number;

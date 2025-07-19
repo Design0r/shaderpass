@@ -14,6 +14,7 @@ import { ShaderOutput } from "./nodes/Output";
 import { String } from "./nodes/String";
 import { Math } from "./nodes/Math";
 import { Vec2, Vec3, Vec4 } from "./nodes/Vec";
+import { Noise2D } from "./nodes/Noise2D";
 
 export interface StoreState {
   nodes: Node[];
@@ -46,6 +47,7 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
     vec2: Vec2,
     vec3: Vec3,
     vec4: Vec4,
+    noise2d: Noise2D,
   },
   selectedNode: undefined,
 
@@ -124,7 +126,12 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
         break;
       }
       case "vec4": {
-        const data = { name: "Vec4", r: "0.0", g: "0.0", b: "0.0", a: "0.0" };
+        const data = { name: "Vec4", r: "0.0", g: "0.0", b: "0.0", a: "1.0" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "noise2d": {
+        const data = { name: "Noise2D", frequency: "1.0" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }

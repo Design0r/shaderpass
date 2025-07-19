@@ -64,8 +64,7 @@ export function AttributeField({
   }, [fieldValue]);
 
   const debounced = useDebouncedCallback((val: string) => {
-    const parsed = type === "number" ? parseFloat(val) : val;
-    onUpdate(nodeId, { [fieldKey]: parsed });
+    onUpdate(nodeId, { [fieldKey]: val });
   }, 500);
 
   const handleChange = (
