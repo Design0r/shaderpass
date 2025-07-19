@@ -86,6 +86,7 @@ export function AttributeField({
       <input
         type="number"
         className="input flex-1"
+        step={0.1}
         value={draft}
         onChange={handleChange}
       />

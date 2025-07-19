@@ -1,17 +1,19 @@
-import type { Edge, Node } from "@xyflow/react";
+import type { Edge } from "@xyflow/react";
 import type { NumberData } from "../nodes/Number";
 import type { MathData } from "../nodes/Math";
 import type { Vec2Data, Vec3Data, Vec4Data } from "../nodes/Vec";
 import type { Noise2DData } from "../nodes/Noise2D";
 import { NOISE_2D } from "./noise/noise2d/noise2d";
 
+type NodeData = { id: string; type: string; data: Record<string, any> };
+
 export class ShaderGenerator {
-  private nodesById: Map<string, Node>;
+  private nodesById: Map<string, NodeData>;
   private inputsById: Map<string, Record<string, string>>;
 
   private nodeCache = new Map<string, string>();
 
-  private nodes: Node[];
+  private nodes: NodeData[];
 
   private fragDeclarations = new Set<string>();
   private fragCode: string[] = [];
@@ -19,8 +21,8 @@ export class ShaderGenerator {
   private vertDeclarations = new Set<string>();
   private vertCode: string[] = [];
 
-  constructor(nodes: Node[], edges: Edge[]) {
-    this.nodesById = new Map<string, Node>();
+  constructor(nodes: NodeData[], edges: Edge[]) {
+    this.nodesById = new Map<string, NodeData>();
     this.inputsById = new Map<string, Record<string, string>>();
     this.nodes = nodes;
     nodes.map((n) => {
@@ -94,7 +96,7 @@ void main() {
     switch (node.type) {
       case "number": {
         const data = node.data as unknown as NumberData;
-        declarations.add(`float ${node.id} = ${data.value.toFixed(3)};`);
+        declarations.add(`float ${node.id} = ${data.value};`);
         break;
       }
       case "math": {
@@ -155,18 +157,30 @@ void main() {
         break;
       }
       case "noise2d": {
-        const data = node.data as unknown as Noise2DData;
-        const inputs = this.inputsById.get(node.id);
-        if (inputs) {
-          for (const [k, v] of Object.entries(inputs)) {
-            data[k] = this.codeGen(v, declarations, code);
-          }
+        const stored = node.data as unknown as Noise2DData;
+        const inputs = this.inputsById.get(node.id) || {};
+
+        const freqExpr = inputs.freq
+          ? this.codeGen(inputs.freq, declarations, code)
+          : stored.frequency;
+
+        let generatedCode: string;
+
+        if (inputs.time) {
+          const timeExpr = this.codeGen(inputs.time, declarations, code);
+          generatedCode = `float ${node.id} = noise(vec2(vUv.x * ${freqExpr} + ${timeExpr}, vUv.y * ${freqExpr} + ${timeExpr}));`;
+        } else {
+          generatedCode = `float ${node.id} = noise(vUv * ${freqExpr});`;
         }
         declarations.add(NOISE_2D);
-        const generatedCode = `float ${node.id} = noise(vUv * ${data.frequency});`;
+
         this.nodeCache.set(node.id, generatedCode);
         code.push(generatedCode);
         break;
+      }
+      case "time": {
+        declarations.add("uniform float uTime;");
+        return "uTime";
       }
 
       default:

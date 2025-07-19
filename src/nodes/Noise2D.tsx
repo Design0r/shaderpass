@@ -8,6 +8,7 @@ import { BaseNode } from "./BaseNode";
 export interface Noise2DData {
   name: string;
   frequency: number;
+  time: number;
 }
 
 export interface Noise2DProps {
@@ -27,6 +28,7 @@ export function Noise2D({ id }: Noise2DProps): JSX.Element {
       <div className="flex justify-between">
         <div className="flex flex-col">
           <span>Freq</span>
+          <span>Time</span>
         </div>
         <div>
           <span>Out</span>
@@ -34,7 +36,13 @@ export function Noise2D({ id }: Noise2DProps): JSX.Element {
       </div>
       <Handle
         id="freq"
-        style={{ top: "73%" }}
+        style={{ top: "53%" }}
+        type="target"
+        position={Position.Left}
+      />
+      <Handle
+        id="time"
+        style={{ top: "78%" }}
         type="target"
         position={Position.Left}
       />

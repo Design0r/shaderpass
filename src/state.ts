@@ -17,6 +17,7 @@ import { String } from "./nodes/String";
 import { Math } from "./nodes/Math";
 import { Vec2, Vec3, Vec4 } from "./nodes/Vec";
 import { Noise2D } from "./nodes/Noise2D";
+import { TimeNode } from "./nodes/Time";
 
 export interface StoreState {
   nodes: Node[];
@@ -52,6 +53,7 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
     vec3: Vec3,
     vec4: Vec4,
     noise2d: Noise2D,
+    time: TimeNode,
   },
   selectedNode: undefined,
 
@@ -112,7 +114,7 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
 
     switch (type) {
       case "number": {
-        const data = { name: "Number", value: 0 };
+        const data = { name: "Number", value: "0.0" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
@@ -147,7 +149,12 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
         break;
       }
       case "noise2d": {
-        const data = { name: "Noise2D", frequency: "1.0" };
+        const data = { name: "Noise2D", frequency: "1.0", time: "0.0" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "time": {
+        const data = { name: "Time" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }

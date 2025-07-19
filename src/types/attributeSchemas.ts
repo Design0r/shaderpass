@@ -52,6 +52,8 @@ export const attributeSchemas: NodeAttributeSchema = {
   noise2d: [
     { type: "string", label: "Name" },
     { type: "number", label: "Frequency" },
+    { type: "number", label: "Time" },
   ],
   shaderOutput: [{ type: "string", label: "Name" }],
+  time: [{ type: "string", label: "Name" }],
 };

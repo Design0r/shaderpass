@@ -1,69 +1,43 @@
-# React + TypeScript + Vite
+# Node-Based Shader Editor for Three.js
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web-based node graph editor for constructing GLSL shaders in real time. Built with React, Zustand, React Flow, and Three.js, this project allows you to visually build vertex and fragment shaders by connecting data nodes and previewing the results on a 3D mesh.
 
-Currently, two official plugins are available:
+![Screenshot](./docs/screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Node Graph UI**: Drag-and-drop nodes, connect edges, and rearrange your graph with React Flow.
+- **Real-Time Shader Preview**: Live GLSL shader compilation and rendering on a 3D sphere via Three.js and react-three-fiber.
+- **Dynamic Node Types**: Number, String, Math, Vec2/3/4, Noise2D, Time, and custom Shader Output nodes.
+- **Attribute Editor**: Edit node parameters (values, operations, enums) with debounced updates.
+- **Export State**: Serialize your node graph to JSON for sharing or persistence.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- **Node.js** v18+ and **npm** or **yarn**
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Running the App
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser to view the editor.
+
+## Usage
+
+1. **Create Nodes**: Use the sidebar or panel to add nodes (Number, Math, Vec, etc.).
+2. **Connect Edges**: Drag handles to connect node outputs to inputs.
+3. **Edit Attributes**: Select a node to open the attributes panel and adjust values.
+4. **Live Preview**: Watch the sphere update in real time with your shader.
+5. **Export**: Click "Export" in the NodeEditor to log the serialized graph JSON.
+
+---
