@@ -1,5 +1,4 @@
-# Node-Based Shader Editor for Three.js
-
+# ShaderPass
 A web-based node graph editor for constructing GLSL shaders in real time. Built with React, Zustand, React Flow, and Three.js, this project allows you to visually build vertex and fragment shaders by connecting data nodes and previewing the results on a 3D mesh.
 
 ![Screenshot](./docs/screenshot.png)
