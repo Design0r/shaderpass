@@ -15,7 +15,7 @@ export function NodeExplorer(): JSX.Element {
         <div
           key={idx}
           style={{ color: cat.color }}
-          className="collapse border-base-300 bg-base-100 border shadow-md"
+          className="collapse  border-base-300 bg-base-100 border shadow-md"
         >
           <input type="checkbox" />
           <div className="collapse-title font-semibold p-3">{cat.label}</div>
@@ -24,7 +24,7 @@ export function NodeExplorer(): JSX.Element {
               <button
                 key={id + idx}
                 style={{ backgroundColor: cat.color }}
-                className="btn w-full text-black shadow-lg"
+                className="btn w-full text-black shadow-lg hover:bg-neutral-content"
                 onClick={() => store.createNode(n.name)}
               >
                 {n.label}

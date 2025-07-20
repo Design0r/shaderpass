@@ -1,6 +1,7 @@
 export type FieldType =
   | { type: "number"; label: string }
   | { type: "string"; label: string }
+  | { type: "boolean"; label: string }
   | {
       type: "enum";
       label: string;
@@ -10,15 +11,15 @@ export type FieldType =
 export type NodeAttributeSchema = Record<string, FieldType[]>;
 
 export const attributeSchemas: NodeAttributeSchema = {
-  number: [
+  float: [
     { type: "string", label: "Name" },
     { type: "number", label: "Value" },
   ],
-  string: [
+  boolean: [
     { type: "string", label: "Name" },
-    { type: "string", label: "Value" },
+    { type: "boolean", label: "Value" },
   ],
-  math: [
+  mathOp: [
     { type: "string", label: "Name" },
     {
       type: "enum",
@@ -54,6 +55,6 @@ export const attributeSchemas: NodeAttributeSchema = {
     { type: "number", label: "Frequency" },
     { type: "number", label: "Time" },
   ],
-  shaderOutput: [{ type: "string", label: "Name" }],
+  basicMtl: [{ type: "string", label: "Name" }],
   time: [{ type: "string", label: "Name" }],
 };

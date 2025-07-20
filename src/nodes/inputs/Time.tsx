@@ -2,8 +2,8 @@ import { Handle, Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
-import { useStore, type StoreState } from "../state";
-import { BaseNode } from "./BaseNode";
+import { useStore, type StoreState } from "../../state";
+import { BaseNode } from "../BaseNode";
 
 export interface TimeData {
   name: string;
@@ -19,7 +19,7 @@ const selector = (id: string) => (store: StoreState) => ({
   nodeColor: store.nodeTypes.inputs.color,
 });
 
-export function TimeNode({ id }: TimeProps): JSX.Element {
+export function Time({ id }: TimeProps): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (

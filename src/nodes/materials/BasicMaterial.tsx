@@ -1,17 +1,17 @@
 import { Handle, Position } from "@xyflow/react";
 import type { JSX } from "react";
 
-import { BaseNode } from "./BaseNode";
-import { useStore, type StoreState } from "../state";
+import { BaseNode } from "../BaseNode";
+import { useStore, type StoreState } from "../../state";
 import { shallow } from "zustand/shallow";
 
-export interface OutputData {
+export interface BasicMaterialData {
   name: string;
 }
 
-export interface OutputProps {
+export interface BasicMaterialProps {
   id: string;
-  data: OutputData;
+  data: BasicMaterialData;
 }
 
 const selector = (id: string) => (store: StoreState) => ({
@@ -19,7 +19,7 @@ const selector = (id: string) => (store: StoreState) => ({
   nodeColor: store.nodeTypes.materials.color,
 });
 
-export function ShaderOutput({ id }: OutputProps): JSX.Element {
+export function BasicMaterial({ id }: BasicMaterialProps): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
   return (
     <BaseNode
@@ -28,8 +28,8 @@ export function ShaderOutput({ id }: OutputProps): JSX.Element {
       accentColor={nodeColor}
     >
       <div className="flex flex-col">
-        <span>Vertex</span>
-        <span>Fragment</span>
+        <span>Displacement</span>
+        <span>Color</span>
       </div>
       <Handle
         id={"vertex"}
@@ -47,5 +47,3 @@ export function ShaderOutput({ id }: OutputProps): JSX.Element {
     </BaseNode>
   );
 }
-
-export default ShaderOutput;

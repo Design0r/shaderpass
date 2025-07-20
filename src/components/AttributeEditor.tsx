@@ -5,6 +5,7 @@ import { attributeSchemas, type FieldType } from "../types/attributeSchemas";
 
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
+import type { Node } from "@xyflow/react";
 
 const selector = (state: StoreState) => ({
   selectedNode: state.selectedNode,
@@ -24,12 +25,12 @@ export function AttributeEditor(): JSX.Element {
   return (
     <div className="p-4 space-y-2">
       <h2 className="text-xl font-bold text-center">Attributes</h2>
-      {schema.map((fieldDef, i) => {
-        const key = Object.keys(data)[i] ?? fieldDef.label.toLowerCase();
+      {schema.map((fieldDef) => {
+        const key = fieldDef.label.toLowerCase();
         return (
           <AttributeField
             key={key}
-            nodeId={selectedNode.id}
+            node={selectedNode}
             fieldKey={key}
             fieldDef={fieldDef}
             fieldValue={data[key]}
@@ -42,7 +43,7 @@ export function AttributeEditor(): JSX.Element {
 }
 
 interface AttributeFieldProps {
-  nodeId: string;
+  node: Node;
   fieldKey: string;
   fieldDef: FieldType;
   fieldValue: any;
@@ -50,7 +51,7 @@ interface AttributeFieldProps {
 }
 
 export function AttributeField({
-  nodeId,
+  node,
   fieldKey,
   fieldDef,
   fieldValue,
@@ -60,11 +61,11 @@ export function AttributeField({
   const [draft, setDraft] = useState(fieldValue?.toString() ?? "");
 
   useEffect(() => {
-    setDraft(fieldValue?.toString() ?? "");
-  }, [fieldValue]);
+    if (type != "boolean") setDraft(fieldValue?.toString() ?? "");
+  }, [fieldValue, type]);
 
   const debounced = useDebouncedCallback((val: string) => {
-    onUpdate(nodeId, { [fieldKey]: val });
+    onUpdate(node.id, { [fieldKey]: val });
   }, 500);
 
   const handleChange = (
@@ -74,7 +75,10 @@ export function AttributeField({
     setDraft(raw);
 
     if (type === "enum") {
-      onUpdate(nodeId, { [fieldKey]: raw });
+      onUpdate(node.id, {
+        [fieldKey]: raw,
+        name: `${node.data.name} ( ${raw} )`,
+      });
     } else {
       debounced(raw);
     }
@@ -98,6 +102,17 @@ export function AttributeField({
         className="input flex-1"
         value={draft}
         onChange={handleChange}
+      />
+    );
+  } else if (type === "boolean") {
+    input = (
+      <input
+        type="checkbox"
+        className="checkbox"
+        checked={Boolean(fieldValue)}
+        onChange={(e) => {
+          onUpdate(nodeId, { [fieldKey]: e.target.checked });
+        }}
       />
     );
   } else {

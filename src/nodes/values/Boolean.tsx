@@ -2,17 +2,17 @@ import { Handle, Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
-import { useStore, type StoreState } from "../state";
-import { BaseNode } from "./BaseNode";
+import { useStore, type StoreState } from "../../state";
+import { BaseNode } from "../BaseNode";
 
-export interface NumberData {
+export interface BooleanData {
   name: string;
-  value: number;
+  value: boolean;
 }
 
-export interface NumberProps {
+export interface BooleanProps {
   id: string;
-  data: NumberData;
+  data: BooleanData;
 }
 
 const selector = (id: string) => (store: StoreState) => ({
@@ -20,11 +20,11 @@ const selector = (id: string) => (store: StoreState) => ({
   nodeColor: store.nodeTypes.values.color,
 });
 
-export function NumberNode({ id }: NumberProps): JSX.Element {
+export function Boolean({ id }: BooleanProps): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode name="Float" isSelected={isSelected} accentColor={nodeColor}>
+    <BaseNode name="Boolean" isSelected={isSelected} accentColor={nodeColor}>
       <div className="flex justify-end items-center">
         <span>Out</span>
       </div>

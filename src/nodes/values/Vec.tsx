@@ -2,8 +2,8 @@ import { Handle, Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
-import { useStore, type StoreState } from "../state";
-import { BaseNode } from "./BaseNode";
+import { useStore, type StoreState } from "../../state";
+import { BaseNode } from "../BaseNode";
 
 export interface Vec2Data {
   name: string;

@@ -2,54 +2,52 @@ import { Handle, Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
-import { useStore, type StoreState } from "../state";
-import { BaseNode } from "./BaseNode";
+import { useStore, type StoreState } from "../../state";
+import { BaseNode } from "../BaseNode";
 
-export interface MathData {
+export interface Noise2DData {
   name: string;
-  operation: string;
+  frequency: number;
+  time: number;
 }
 
-export interface MathProps {
+export interface Noise2DProps {
   id: string;
-  data: MathData;
+  data: Noise2DData;
 }
 
 const selector = (id: string) => (store: StoreState) => ({
   isSelected: store.selectedNode?.id === id,
-  nodeColor: store.nodeTypes.math.color,
+  nodeColor: store.nodeTypes.noise.color,
 });
 
-export function Math({ id }: MathProps): JSX.Element {
+export function Noise2D({ id }: Noise2DProps): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Math" accentColor={nodeColor}>
+    <BaseNode isSelected={isSelected} name="Noise2D" accentColor={nodeColor}>
       <div className="flex justify-between">
         <div className="flex flex-col">
-          <span>A</span>
-          <span>B</span>
+          <span>Freq</span>
+          <span>Time</span>
         </div>
-        <div className="items-center">
+        <div>
           <span>Out</span>
         </div>
       </div>
-
       <Handle
-        style={{ top: "54%" }}
-        id={"a"}
+        id="freq"
+        style={{ top: "53%" }}
         type="target"
         position={Position.Left}
       />
       <Handle
-        style={{ top: "80%" }}
-        id={"b"}
+        id="time"
+        style={{ top: "78%" }}
         type="target"
         position={Position.Left}
       />
-      <Handle id={"out"} type="source" position={Position.Right} />
+      <Handle id="out" type="source" position={Position.Right} />
     </BaseNode>
   );
 }
-
-export default Math;
