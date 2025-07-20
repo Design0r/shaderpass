@@ -7,22 +7,41 @@ import {
   type EdgeChange,
   type Node,
   type NodeChange,
-  type NodeTypes,
+  type NodeProps,
 } from "@xyflow/react";
 import { customAlphabet, nanoid } from "nanoid";
 import { createWithEqualityFn } from "zustand/traditional";
 import { NumberNode } from "./nodes/Number";
 import { ShaderOutput } from "./nodes/Output";
-import { String } from "./nodes/String";
 import { Math } from "./nodes/Math";
 import { Vec2, Vec3, Vec4 } from "./nodes/Vec";
 import { Noise2D } from "./nodes/Noise2D";
 import { TimeNode } from "./nodes/Time";
+import type { ComponentType } from "react";
+
+export type ShaderPassNodes = Record<string, ShaderPassCategory>;
+
+export interface ShaderPassCategory {
+  color: string;
+  label: string;
+  nodes: ShaderPassNode[];
+}
+
+export interface ShaderPassNode {
+  name: string;
+  label: string;
+  node: ComponentType<
+    NodeProps & {
+      data: any;
+      type: any;
+    }
+  >;
+}
 
 export interface StoreState {
   nodes: Node[];
   edges: Edge[];
-  nodeTypes: NodeTypes;
+  nodeTypes: ShaderPassNodes;
   selectedNode: Node | undefined;
 
   onNodesChange: (changes: NodeChange[]) => void;
@@ -45,16 +64,40 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
   nodes: [] as Node[],
   edges: [] as Edge[],
   nodeTypes: {
-    shaderOutput: ShaderOutput,
-    number: NumberNode,
-    string: String,
-    math: Math,
-    vec2: Vec2,
-    vec3: Vec3,
-    vec4: Vec4,
-    noise2d: Noise2D,
-    time: TimeNode,
+    values: {
+      color: "#afa",
+      label: "Values",
+      nodes: [
+        { name: "float", label: "Float", node: NumberNode },
+        { name: "vec2", label: "Vec2", node: Vec2 },
+        { name: "vec3", label: "Vec3", node: Vec3 },
+        { name: "vec4", label: "Vec4", node: Vec4 },
+      ],
+    },
+    materials: {
+      color: "#aaf",
+      label: "Materials",
+      nodes: [
+        { name: "basicMtl", label: "Basic Material", node: ShaderOutput },
+      ],
+    },
+    math: {
+      color: "#faa",
+      label: "Math",
+      nodes: [{ name: "mathOp", label: "Math Op", node: Math }],
+    },
+    noise: {
+      color: "#999",
+      label: "Noise",
+      nodes: [{ name: "noise2d", label: "Noise 2D", node: Noise2D }],
+    },
+    inputs: {
+      color: "#fff",
+      label: "Inputs",
+      nodes: [{ name: "time", label: "Time", node: TimeNode }],
+    },
   },
+
   selectedNode: undefined,
 
   onNodesChange(changes) {
@@ -113,23 +156,18 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
     const position = { x: 0, y: 0 };
 
     switch (type) {
-      case "number": {
-        const data = { name: "Number", value: "0.0" };
+      case "float": {
+        const data = { name: "Float", value: "0.0" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
-      case "string": {
-        const data = { name: "String", value: "" };
+      case "basicMtl": {
+        const data = { name: "Basic Material", value: "" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
-      case "shaderOutput": {
-        const data = { name: "Material", value: "" };
-        set({ nodes: [...get().nodes, { id, type, data, position }] });
-        break;
-      }
-      case "math": {
-        const data = { name: "Math", operation: "+" };
+      case "mathOp": {
+        const data = { name: "Math Op", operation: "+" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }

@@ -17,13 +17,14 @@ export interface NumberProps {
 
 const selector = (id: string) => (store: StoreState) => ({
   isSelected: store.selectedNode?.id === id,
+  nodeColor: store.nodeTypes.values.color,
 });
 
 export function NumberNode({ id }: NumberProps): JSX.Element {
-  const { isSelected } = useStore(selector(id), shallow);
+  const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode name="Number" isSelected={isSelected} accentColor="bg-gray-400">
+    <BaseNode name="Float" isSelected={isSelected} accentColor={nodeColor}>
       <div className="flex justify-end items-center">
         <span>Out</span>
       </div>

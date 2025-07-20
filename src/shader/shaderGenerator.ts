@@ -37,7 +37,7 @@ export class ShaderGenerator {
 
   public generate(): { vertex: string; fragment: string } {
     const defaultRet = { vertex: "", fragment: "" };
-    const root = this.nodes.find((n) => n.type === "shaderOutput")?.id;
+    const root = this.nodes.find((n) => n.type === "basicMtl")?.id;
     if (!root) return defaultRet;
 
     const rootInputs = this.inputsById.get(root);
@@ -94,12 +94,12 @@ void main() {
     if (this.nodeCache.has(nodeId)) return nodeId;
 
     switch (node.type) {
-      case "number": {
+      case "float": {
         const data = node.data as unknown as NumberData;
         declarations.add(`float ${node.id} = ${data.value};`);
         break;
       }
-      case "math": {
+      case "mathOp": {
         const data = node.data as unknown as MathData;
         const inputs = this.inputsById.get(node.id);
         if (!inputs) {
@@ -184,7 +184,7 @@ void main() {
       }
 
       default:
-        throw new Error("Error: invalid node type: ", node.type);
+        throw new Error(`Error: invalid node type: ${node.type}`);
     }
 
     return node.id;

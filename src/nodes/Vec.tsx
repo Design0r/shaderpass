@@ -18,13 +18,14 @@ export interface Vec2Props {
 
 const selector = (id: string) => (store: StoreState) => ({
   isSelected: store.selectedNode?.id === id,
+  nodeColor: store.nodeTypes.values.color,
 });
 
 export function Vec2({ id }: Vec2Props): JSX.Element {
-  const { isSelected } = useStore(selector(id), shallow);
+  const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Vec2" accentColor="bg-gray-400">
+    <BaseNode isSelected={isSelected} name="Vec2" accentColor={nodeColor}>
       <div className="flex justify-between">
         <div className="flex flex-col">
           <span>X</span>
@@ -63,10 +64,10 @@ export interface Vec3Props {
 }
 
 export function Vec3({ id }: Vec3Props): JSX.Element {
-  const { isSelected } = useStore(selector(id), shallow);
+  const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Vec3" accentColor="bg-gray-400">
+    <BaseNode isSelected={isSelected} name="Vec3" accentColor={nodeColor}>
       <div className="flex justify-between">
         <div className="flex flex-col">
           <span>R</span>
@@ -114,10 +115,10 @@ export interface Vec4Props {
 }
 
 export function Vec4({ id }: Vec4Props): JSX.Element {
-  const { isSelected } = useStore(selector(id), shallow);
+  const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Vec4" accentColor="bg-gray-400">
+    <BaseNode isSelected={isSelected} name="Vec4" accentColor={nodeColor}>
       <div className="flex justify-between">
         <div className="flex flex-col">
           <span>R</span>

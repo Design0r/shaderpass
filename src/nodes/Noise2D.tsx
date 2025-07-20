@@ -18,13 +18,14 @@ export interface Noise2DProps {
 
 const selector = (id: string) => (store: StoreState) => ({
   isSelected: store.selectedNode?.id === id,
+  nodeColor: store.nodeTypes.noise.color,
 });
 
 export function Noise2D({ id }: Noise2DProps): JSX.Element {
-  const { isSelected } = useStore(selector(id), shallow);
+  const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Noise2D" accentColor="bg-gray-400">
+    <BaseNode isSelected={isSelected} name="Noise2D" accentColor={nodeColor}>
       <div className="flex justify-between">
         <div className="flex flex-col">
           <span>Freq</span>

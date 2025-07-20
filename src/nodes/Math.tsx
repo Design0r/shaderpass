@@ -17,13 +17,14 @@ export interface MathProps {
 
 const selector = (id: string) => (store: StoreState) => ({
   isSelected: store.selectedNode?.id === id,
+  nodeColor: store.nodeTypes.math.color,
 });
 
 export function Math({ id }: MathProps): JSX.Element {
-  const { isSelected } = useStore(selector(id), shallow);
+  const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Math" accentColor="bg-gray-400">
+    <BaseNode isSelected={isSelected} name="Math" accentColor={nodeColor}>
       <div className="flex justify-between">
         <div className="flex flex-col">
           <span>A</span>

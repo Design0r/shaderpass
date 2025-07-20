@@ -1,5 +1,6 @@
 import {
   Background,
+  BackgroundVariant,
   Controls,
   MiniMap,
   Panel,
@@ -12,16 +13,20 @@ import { useCallback, useRef, type JSX, type ReactElement } from "react";
 import { shallow } from "zustand/shallow";
 import { serializeState, useStore, type StoreState } from "../state";
 
-const selector = (selector: StoreState) => ({
-  nodes: selector.nodes,
-  edges: selector.edges,
-  onNodesChange: selector.onNodesChange,
-  onEdgesChange: selector.onEdgesChange,
-  onConnect: selector.addEdge,
-  nodeTypes: selector.nodeTypes,
-  selectNode: selector.selectNode,
-  reconnectEdge: selector.reconnectEdge,
-  removeEdge: selector.removeEdge,
+const selector = (store: StoreState) => ({
+  nodes: store.nodes,
+  edges: store.edges,
+  onNodesChange: store.onNodesChange,
+  onEdgesChange: store.onEdgesChange,
+  onConnect: store.addEdge,
+  nodeTypes: Object.fromEntries(
+    Object.values(store.nodeTypes).flatMap((cat) =>
+      cat.nodes.map(({ name, node }) => [name, node] as const),
+    ),
+  ) as Record<string, React.ComponentType<any>>,
+  selectNode: store.selectNode,
+  reconnectEdge: store.reconnectEdge,
+  removeEdge: store.removeEdge,
 });
 
 export function NodeEditor({
@@ -30,7 +35,6 @@ export function NodeEditor({
   children?: ReactElement | ReactElement[] | undefined;
 }): JSX.Element {
   const store = useStore(selector, shallow);
-
   const edgeReconnectSuccessful = useRef(true);
 
   const onReconnectStart = useCallback(() => {
@@ -84,7 +88,7 @@ export function NodeEditor({
       <Controls />
       <MiniMap />
       {children}
-      <Background />
+      <Background color="#222" gap={40} variant={BackgroundVariant.Lines} />
     </ReactFlow>
   );
 }

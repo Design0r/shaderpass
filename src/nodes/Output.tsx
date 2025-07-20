@@ -16,12 +16,17 @@ export interface OutputProps {
 
 const selector = (id: string) => (store: StoreState) => ({
   isSelected: store.selectedNode?.id === id,
+  nodeColor: store.nodeTypes.materials.color,
 });
 
 export function ShaderOutput({ id }: OutputProps): JSX.Element {
-  const { isSelected } = useStore(selector(id), shallow);
+  const { isSelected, nodeColor } = useStore(selector(id), shallow);
   return (
-    <BaseNode isSelected={isSelected} name="Output" accentColor="bg-gray-400">
+    <BaseNode
+      isSelected={isSelected}
+      name="Basic Material"
+      accentColor={nodeColor}
+    >
       <div className="flex flex-col">
         <span>Vertex</span>
         <span>Fragment</span>

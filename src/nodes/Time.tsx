@@ -16,13 +16,14 @@ export interface TimeProps {
 
 const selector = (id: string) => (store: StoreState) => ({
   isSelected: store.selectedNode?.id === id,
+  nodeColor: store.nodeTypes.inputs.color,
 });
 
 export function TimeNode({ id }: TimeProps): JSX.Element {
-  const { isSelected } = useStore(selector(id), shallow);
+  const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode name="Time" isSelected={isSelected} accentColor="bg-gray-400">
+    <BaseNode name="Time" isSelected={isSelected} accentColor={nodeColor}>
       <div className="flex justify-end items-center">
         <span>Out</span>
       </div>

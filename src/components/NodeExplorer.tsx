@@ -10,15 +10,28 @@ const selector = (store: StoreState) => ({
 export function NodeExplorer(): JSX.Element {
   const store = useStore(selector, shallow);
   return (
-    <div className="flex flex-col">
-      {Object.entries(store.nodeTypes).map(([k, _], idx) => (
-        <button
+    <div className="flex flex-col space-y-1 px-1">
+      {Object.entries(store.nodeTypes).map(([_, cat], idx) => (
+        <div
           key={idx}
-          className="btn bg-base-100 text-white"
-          onClick={() => store.createNode(k)}
+          style={{ color: cat.color }}
+          className="collapse border-base-300 bg-base-100 border shadow-md"
         >
-          {k.charAt(0).toUpperCase() + k.slice(1)}
-        </button>
+          <input type="checkbox" />
+          <div className="collapse-title font-semibold p-3">{cat.label}</div>
+          <div className="collapse-content px-1 text-sm space-y-1">
+            {cat.nodes.map((n, id) => (
+              <button
+                key={id + idx}
+                style={{ backgroundColor: cat.color }}
+                className="btn w-full text-black shadow-lg"
+                onClick={() => store.createNode(n.name)}
+              >
+                {n.label}
+              </button>
+            ))}
+          </div>
+        </div>
       ))}
     </div>
   );
