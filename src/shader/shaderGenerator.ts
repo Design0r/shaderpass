@@ -1,9 +1,9 @@
 import type { Edge } from "@xyflow/react";
-import type { NumberData } from "../nodes/Number";
-import type { MathData } from "../nodes/Math";
-import type { Vec2Data, Vec3Data, Vec4Data } from "../nodes/Vec";
-import type { Noise2DData } from "../nodes/Noise2D";
-import { NOISE_2D } from "./noise/noise2d/noise2d";
+import type { FloatData } from "../nodes/values/Float";
+import type { MathOpData } from "../nodes/math/MathOp";
+import type { Vec2Data, Vec3Data, Vec4Data } from "../nodes/values/Vec";
+import type { Noise2DData } from "../nodes/noise/Noise2D";
+import { FBM_2D, NOISE_2D } from "./noise/noise2d/noise2d";
 
 type NodeData = { id: string; type: string; data: Record<string, any> };
 
@@ -95,21 +95,19 @@ void main() {
 
     switch (node.type) {
       case "float": {
-        const data = node.data as unknown as NumberData;
+        const data = node.data as unknown as FloatData;
         declarations.add(`float ${node.id} = ${data.value};`);
         break;
       }
       case "mathOp": {
-        const data = node.data as unknown as MathData;
+        const data = node.data as unknown as MathOpData;
         const inputs = this.inputsById.get(node.id);
         if (!inputs) {
           console.log("no inputs found for: \n", node);
           return "";
         }
-        console.log(inputs);
         const a = this.codeGen(inputs.a, declarations, code);
         const b = this.codeGen(inputs.b, declarations, code);
-        console.log(a, b);
 
         const generatedCode = `float ${node.id} = ${a} ${data.operation} ${b};`;
         this.nodeCache.set(node.id, generatedCode);
@@ -160,19 +158,24 @@ void main() {
         const stored = node.data as unknown as Noise2DData;
         const inputs = this.inputsById.get(node.id) || {};
 
-        const freqExpr = inputs.freq
+        const freq = inputs.freq
           ? this.codeGen(inputs.freq, declarations, code)
           : stored.frequency;
+
+        const octaves = inputs.octaves
+          ? parseInt(this.codeGen(inputs.octaves, declarations, code))
+          : parseInt(stored.octaves);
 
         let generatedCode: string;
 
         if (inputs.time) {
           const timeExpr = this.codeGen(inputs.time, declarations, code);
-          generatedCode = `float ${node.id} = noise(vec2(vUv.x * ${freqExpr} + ${timeExpr}, vUv.y * ${freqExpr} + ${timeExpr}));`;
+          generatedCode = `float ${node.id} = fbm(vec2(vUv * ${freq} + ${timeExpr}), ${octaves});`;
         } else {
-          generatedCode = `float ${node.id} = noise(vUv * ${freqExpr});`;
+          generatedCode = `float ${node.id} = fbm(vUv * ${freq}, ${octaves});`;
         }
         declarations.add(NOISE_2D);
+        declarations.add(FBM_2D);
 
         this.nodeCache.set(node.id, generatedCode);
         code.push(generatedCode);

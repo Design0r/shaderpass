@@ -1,0 +1,44 @@
+import { useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useRef, type JSX } from "react";
+import type { ShaderMaterial } from "three";
+import * as THREE from "three";
+
+const vertex = `${VERTEX_SHADER}
+`
+
+const fragment = `${FRAGMENT_SHADER}
+`
+
+export interface ${MATERIAL_NAME}Props {}
+
+export function ${MATERIAL_NAME}(props: ${MATERIAL_NAME}Props): JSX.Element {
+  const { size } = useThree();
+  const matRef = useRef<ShaderMaterial>(null!);
+
+  useEffect(() => {
+    if (matRef.current) {
+      matRef.current.uniforms.uResolution.value.set(size.width, size.height);
+    }
+  }, [size]);
+
+  useFrame((_, delta) => {
+    if (matRef.current) {
+      matRef.current.uniforms.uTime.value += delta;
+      matRef.current.needsUpdate = true;
+    }
+  });
+
+  return (<shaderMaterial
+            ref={matRef}
+            transparent
+            fragmentShader={fragment}
+            vertexShader={vertex}
+            uniforms={{
+              uResolution: {
+                value: new THREE.Vector2(size.width, size.height),
+              },
+              uTime: { value: 0.0 },
+            }}
+            {...props}
+        />);
+}

@@ -133,7 +133,12 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
         break;
       }
       case "noise2d": {
-        const data = { name: "Noise2D", frequency: "1.0", time: "0.0" };
+        const data = {
+          name: "Noise2D",
+          frequency: "1.0",
+          time: "0.0",
+          octaves: "3",
+        };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }

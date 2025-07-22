@@ -11,7 +11,9 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useCallback, useRef, type JSX, type ReactElement } from "react";
 import { shallow } from "zustand/shallow";
-import { serializeState, useStore, type StoreState } from "../state";
+import { useStore, type StoreState } from "../state";
+import { ShaderGenerator } from "../shader/shaderGenerator";
+import { loadTemplate } from "../shader/templateLoader";
 
 const selector = (store: StoreState) => ({
   nodes: store.nodes,
@@ -79,7 +81,19 @@ export function NodeEditor({
         <button
           className="btn btn-primary"
           onClick={() => {
-            console.log(serializeState());
+            const s = new ShaderGenerator(store.nodes, store.edges);
+            const result = s.generate();
+            console.log(result);
+            const data = {
+              MATERIAL_NAME: "MyMaterial",
+              SHADER_NAME: "MyShader",
+              SHADER_NAME_LOWER: "myShader",
+              UNIFORMS: "",
+              FRAGMENT_SHADER: result.fragment,
+              VERTEX_SHADER: result.vertex,
+            };
+            const template = loadTemplate(data);
+            navigator.clipboard.writeText(template);
           }}
         >
           Export

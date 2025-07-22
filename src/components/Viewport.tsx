@@ -12,14 +12,22 @@ import { shallow } from "zustand/shallow";
 import { ShaderGenerator } from "../shader/shaderGenerator";
 import type { ShaderMaterial } from "three";
 import * as THREE from "three";
+import { TestScene } from "./TestScene";
 
 export function Viewport(): JSX.Element {
+  const [debug, setDebug] = useState<boolean>(false);
   return (
-    <>
-      <Canvas shadows>
-        <Scene />
-      </Canvas>
-    </>
+    <div className="w-full h-full">
+      <label className="fixed right-0 p-2 z-100">
+        <input
+          type="checkbox"
+          className="toggle toggle-error"
+          checked={debug}
+          onClick={() => setDebug((d) => !d)}
+        />
+      </label>
+      <Canvas shadows>{debug ? <TestScene /> : <Scene />}</Canvas>
+    </div>
   );
 }
 
@@ -48,7 +56,6 @@ function Scene(): JSX.Element {
       }[],
     [nodeDataJSON],
   );
-
   const [frag, setFrag] = useState<string>(`
 void main() {
  gl_FragColor = vec4(1.0,1.0,1.0,1.0);

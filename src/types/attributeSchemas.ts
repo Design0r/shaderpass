@@ -54,6 +54,7 @@ export const attributeSchemas: NodeAttributeSchema = {
     { type: "string", label: "Name" },
     { type: "number", label: "Frequency" },
     { type: "number", label: "Time" },
+    { type: "number", label: "Octaves" },
   ],
   basicMtl: [{ type: "string", label: "Name" }],
   time: [{ type: "string", label: "Name" }],
