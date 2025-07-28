@@ -147,6 +147,11 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
+      case "uv": {
+        const data = { name: "UV" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
     }
   },
 }));

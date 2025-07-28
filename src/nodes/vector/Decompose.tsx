@@ -6,55 +6,59 @@ import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
 import { LimitHandle } from "../../handles/Handle";
 
-export interface Noise2DData {
+export interface Vec4Data {
   name: string;
-  frequency: number;
-  time: number;
-  octaves: number;
+  r: string;
+  g: string;
+  b: string;
+  a: string;
 }
 
-export interface Noise2DProps {
+export interface Vec4Props {
   id: string;
-  data: Noise2DData;
+  data: Vec4Data;
 }
 
-const selector = (id: string) => (store: StoreState) => ({
-  isSelected: store.selectedNode?.id === id,
-  nodeColor: store.nodeTypes.noise.color,
-});
-
-export function Noise2D({ id }: Noise2DProps): JSX.Element {
+export function Vec4({ id }: Vec4Props): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Noise2D" accentColor={nodeColor}>
+    <BaseNode isSelected={isSelected} name="Vec4" accentColor={nodeColor}>
       <div className="flex justify-between">
         <div className="flex flex-col">
-          <span>Freq</span>
-          <span>Time</span>
-          <span>Octaves</span>
+          <span>R</span>
+          <span>G</span>
+          <span>B</span>
+          <span>A</span>
         </div>
         <div>
           <span>Out</span>
         </div>
       </div>
       <LimitHandle
-        id="freq"
-        style={{ top: "43%" }}
+        id="r"
+        style={{ top: "37%" }}
         type="target"
         position={Position.Left}
         connectionCount={1}
       />
       <LimitHandle
-        id="time"
-        style={{ top: "63%" }}
+        id="g"
+        style={{ top: "53%" }}
         type="target"
         position={Position.Left}
         connectionCount={1}
       />
       <LimitHandle
-        id="octaves"
-        style={{ top: "83%" }}
+        id="b"
+        style={{ top: "69%" }}
+        type="target"
+        position={Position.Left}
+        connectionCount={1}
+      />
+      <LimitHandle
+        id="a"
+        style={{ top: "85%" }}
         type="target"
         position={Position.Left}
         connectionCount={1}

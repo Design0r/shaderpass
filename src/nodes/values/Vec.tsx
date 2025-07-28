@@ -4,6 +4,7 @@ import { shallow } from "zustand/shallow";
 
 import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
+import { LimitHandle } from "../../handles/Handle";
 
 export interface Vec2Data {
   name: string;
@@ -35,17 +36,19 @@ export function Vec2({ id }: Vec2Props): JSX.Element {
           <span>Out</span>
         </div>
       </div>
-      <Handle
+      <LimitHandle
         id="x"
         style={{ top: "50%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
-      <Handle
+      <LimitHandle
         id="y"
         style={{ top: "80%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
       <Handle id="out" type="source" position={Position.Right} />
     </BaseNode>
@@ -78,23 +81,26 @@ export function Vec3({ id }: Vec3Props): JSX.Element {
           <span>Out</span>
         </div>
       </div>
-      <Handle
+      <LimitHandle
         id="r"
         style={{ top: "37%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
-      <Handle
+      <LimitHandle
         id="g"
         style={{ top: "60%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
-      <Handle
+      <LimitHandle
         id="b"
         style={{ top: "83%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
       <Handle id="out" type="source" position={Position.Right} />
     </BaseNode>
@@ -130,29 +136,33 @@ export function Vec4({ id }: Vec4Props): JSX.Element {
           <span>Out</span>
         </div>
       </div>
-      <Handle
+      <LimitHandle
         id="r"
         style={{ top: "37%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
-      <Handle
+      <LimitHandle
         id="g"
         style={{ top: "53%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
-      <Handle
+      <LimitHandle
         id="b"
         style={{ top: "69%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
-      <Handle
+      <LimitHandle
         id="a"
         style={{ top: "85%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
       <Handle id="out" type="source" position={Position.Right} />
     </BaseNode>

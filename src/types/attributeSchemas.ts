@@ -58,4 +58,5 @@ export const attributeSchemas: NodeAttributeSchema = {
   ],
   basicMtl: [{ type: "string", label: "Name" }],
   time: [{ type: "string", label: "Name" }],
+  uv: [{ type: "string", label: "Name" }],
 };

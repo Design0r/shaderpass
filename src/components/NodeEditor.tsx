@@ -83,7 +83,6 @@ export function NodeEditor({
           onClick={() => {
             const s = new ShaderGenerator(store.nodes, store.edges);
             const result = s.generate();
-            console.log(result);
             const data = {
               MATERIAL_NAME: "MyMaterial",
               SHADER_NAME: "MyShader",

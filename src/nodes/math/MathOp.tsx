@@ -4,6 +4,7 @@ import { shallow } from "zustand/shallow";
 
 import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
+import { LimitHandle } from "../../handles/Handle";
 
 export interface MathOpData {
   name: string;
@@ -35,17 +36,19 @@ export function MathOp({ id, data }: MathOpProps): JSX.Element {
         </div>
       </div>
 
-      <Handle
+      <LimitHandle
         style={{ top: "54%" }}
         id={"a"}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
-      <Handle
+      <LimitHandle
         style={{ top: "80%" }}
         id={"b"}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
       <Handle id={"out"} type="source" position={Position.Right} />
     </BaseNode>

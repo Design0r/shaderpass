@@ -1,9 +1,10 @@
-import { Handle, Position } from "@xyflow/react";
+import { Position } from "@xyflow/react";
 import type { JSX } from "react";
 
 import { BaseNode } from "../BaseNode";
 import { useStore, type StoreState } from "../../state";
 import { shallow } from "zustand/shallow";
+import { LimitHandle } from "../../handles/Handle";
 
 export interface BasicMaterialData {
   name: string;
@@ -31,18 +32,20 @@ export function BasicMaterial({ id }: BasicMaterialProps): JSX.Element {
         <span>Displacement</span>
         <span>Color</span>
       </div>
-      <Handle
+      <LimitHandle
         id={"vertex"}
         style={{ top: "55%" }}
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
-      <Handle
+      <LimitHandle
         id={"fragment"}
         style={{ top: "75%" }}
         className="mt-1"
         type="target"
         position={Position.Left}
+        connectionCount={1}
       />
     </BaseNode>
   );

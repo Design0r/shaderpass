@@ -11,8 +11,6 @@ export class ShaderGenerator {
   private nodesById: Map<string, NodeData>;
   private inputsById: Map<string, Record<string, string>>;
 
-  private nodeCache = new Map<string, string>();
-
   private nodes: NodeData[];
 
   private fragDeclarations = new Set<string>();
@@ -59,7 +57,8 @@ ${[...this.vertDeclarations].join("\n")}
 void main() {
     vUv = uv;
     ${[...this.vertCode].join("\n    ")}
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+    vec3 disp = ${vertexTree} * normal;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position + disp,1.0);
 }
 `;
 
@@ -91,7 +90,6 @@ void main() {
       console.log("no node found for: \n", nodeId);
       return "";
     }
-    if (this.nodeCache.has(nodeId)) return nodeId;
 
     switch (node.type) {
       case "float": {
@@ -110,7 +108,6 @@ void main() {
         const b = this.codeGen(inputs.b, declarations, code);
 
         const generatedCode = `float ${node.id} = ${a} ${data.operation} ${b};`;
-        this.nodeCache.set(node.id, generatedCode);
         code.push(generatedCode);
 
         break;
@@ -124,7 +121,6 @@ void main() {
           }
         }
         const generatedCode = `vec2 ${node.id} = vec2(${data.x}, ${data.y});`;
-        this.nodeCache.set(node.id, generatedCode);
         code.push(generatedCode);
         break;
       }
@@ -137,7 +133,6 @@ void main() {
           }
         }
         const generatedCode = `vec3 ${node.id} = vec3(${data.r}, ${data.g}, ${data.b});`;
-        this.nodeCache.set(node.id, generatedCode);
         code.push(generatedCode);
         break;
       }
@@ -150,7 +145,6 @@ void main() {
           }
         }
         const generatedCode = `vec4 ${node.id} = vec4(${data.r}, ${data.g}, ${data.b}, ${data.a});`;
-        this.nodeCache.set(node.id, generatedCode);
         code.push(generatedCode);
         break;
       }
@@ -177,13 +171,15 @@ void main() {
         declarations.add(NOISE_2D);
         declarations.add(FBM_2D);
 
-        this.nodeCache.set(node.id, generatedCode);
         code.push(generatedCode);
         break;
       }
       case "time": {
         declarations.add("uniform float uTime;");
         return "uTime";
+      }
+      case "uv": {
+        return "vUv";
       }
 
       default:

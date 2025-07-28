@@ -8,6 +8,7 @@ import { Vec2, Vec3, Vec4 } from "../nodes/values/Vec";
 import { Noise2D } from "../nodes/noise/Noise2D";
 import { Time } from "../nodes/inputs/Time";
 import { Boolean } from "../nodes/values/Boolean";
+import { Uv } from "../nodes/inputs/Uv";
 
 export type ShaderPassNodes = Record<string, ShaderPassCategory>;
 
@@ -40,6 +41,11 @@ export const NodeTypes = {
       { name: "vec4", label: "Vec4", node: Vec4 },
     ],
   },
+  vector: {
+    color: "#aaf",
+    label: "Vector",
+    nodes:[{name: "decompose", label: "Decompose", node: }],
+  },
   materials: {
     color: "#aaf",
     label: "Materials",
@@ -58,6 +64,9 @@ export const NodeTypes = {
   inputs: {
     color: "#fff",
     label: "Inputs",
-    nodes: [{ name: "time", label: "Time", node: Time }],
+    nodes: [
+      { name: "time", label: "Time", node: Time },
+      { name: "uv", label: "UV", node: Uv },
+    ],
   },
 };
