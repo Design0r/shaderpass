@@ -152,6 +152,11 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }
+      case "decompose": {
+        const data = { name: "Decompose" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
     }
   },
 }));

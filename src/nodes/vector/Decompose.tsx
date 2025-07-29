@@ -19,51 +19,52 @@ export interface Vec4Props {
   data: Vec4Data;
 }
 
-export function Vec4({ id }: Vec4Props): JSX.Element {
+const selector = (id: string) => (state: StoreState) => ({
+  isSelected: state.selectedNode?.id === id,
+  nodeColor: state.nodeTypes.vector.color,
+});
+
+export function Decompose({ id }: Vec4Props): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Vec4" accentColor={nodeColor}>
+    <BaseNode isSelected={isSelected} name="Decompose" accentColor={nodeColor}>
       <div className="flex justify-between">
+        <div>
+          <span>Vec</span>
+        </div>
         <div className="flex flex-col">
           <span>R</span>
           <span>G</span>
           <span>B</span>
           <span>A</span>
         </div>
-        <div>
-          <span>Out</span>
-        </div>
       </div>
-      <LimitHandle
+      <Handle
         id="r"
         style={{ top: "37%" }}
-        type="target"
-        position={Position.Left}
-        connectionCount={1}
+        type="source"
+        position={Position.Right}
       />
-      <LimitHandle
+      <Handle
         id="g"
         style={{ top: "53%" }}
-        type="target"
-        position={Position.Left}
-        connectionCount={1}
+        type="source"
+        position={Position.Right}
       />
-      <LimitHandle
+      <Handle
         id="b"
         style={{ top: "69%" }}
-        type="target"
-        position={Position.Left}
-        connectionCount={1}
+        type="source"
+        position={Position.Right}
       />
-      <LimitHandle
+      <Handle
         id="a"
         style={{ top: "85%" }}
-        type="target"
-        position={Position.Left}
-        connectionCount={1}
+        type="source"
+        position={Position.Right}
       />
-      <Handle id="out" type="source" position={Position.Right} />
+      <Handle id="vec" type="target" position={Position.Left} />
     </BaseNode>
   );
 }

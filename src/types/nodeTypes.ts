@@ -9,6 +9,7 @@ import { Noise2D } from "../nodes/noise/Noise2D";
 import { Time } from "../nodes/inputs/Time";
 import { Boolean } from "../nodes/values/Boolean";
 import { Uv } from "../nodes/inputs/Uv";
+import { Decompose } from "../nodes/vector/Decompose";
 
 export type ShaderPassNodes = Record<string, ShaderPassCategory>;
 
@@ -42,9 +43,9 @@ export const NodeTypes = {
     ],
   },
   vector: {
-    color: "#aaf",
+    color: "#0af",
     label: "Vector",
-    nodes:[{name: "decompose", label: "Decompose", node: }],
+    nodes: [{ name: "decompose", label: "Decompose", node: Decompose }],
   },
   materials: {
     color: "#aaf",

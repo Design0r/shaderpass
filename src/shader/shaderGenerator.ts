@@ -9,7 +9,10 @@ type NodeData = { id: string; type: string; data: Record<string, any> };
 
 export class ShaderGenerator {
   private nodesById: Map<string, NodeData>;
-  private inputsById: Map<string, Record<string, string>>;
+  private inputsById: Map<
+    string,
+    Record<string, { node: string; port: string }>
+  >;
 
   private nodes: NodeData[];
 
@@ -21,14 +24,17 @@ export class ShaderGenerator {
 
   constructor(nodes: NodeData[], edges: Edge[]) {
     this.nodesById = new Map<string, NodeData>();
-    this.inputsById = new Map<string, Record<string, string>>();
+    this.inputsById = new Map<
+      string,
+      Record<string, { node: string; port: string }>
+    >();
     this.nodes = nodes;
     nodes.map((n) => {
       this.nodesById.set(n.id, n);
     });
-    for (const { source, target, targetHandle } of edges) {
+    for (const { source, sourceHandle, target, targetHandle } of edges) {
       const map = this.inputsById.get(target) || {};
-      map[targetHandle ?? ""] = source;
+      map[targetHandle!] = { node: source, port: sourceHandle! };
       this.inputsById.set(target, map);
     }
   }
@@ -57,7 +63,7 @@ ${[...this.vertDeclarations].join("\n")}
 void main() {
     vUv = uv;
     ${[...this.vertCode].join("\n    ")}
-    vec3 disp = ${vertexTree} * normal;
+    vec3 disp = ${vertexTree?.node || "1.0"} * normal;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position + disp,1.0);
 }
 `;
@@ -71,7 +77,7 @@ varying vec2 vUv;
 ${[...this.fragDeclarations].join("\n")}
 void main() {
     ${[...this.fragCode].join("\n    ")}
-    gl_FragColor = ${fragmentTree};
+    gl_FragColor = ${fragmentTree?.node};
 }
 `;
     console.log(vertex);
@@ -81,13 +87,13 @@ void main() {
   }
 
   private codeGen(
-    nodeId: string,
+    nodePortId: { node: string; port: string },
     declarations: Set<string>,
     code: string[],
   ): string {
-    const node = this.nodesById.get(nodeId);
+    const node = this.nodesById.get(nodePortId.node);
     if (!node) {
-      console.log("no node found for: \n", nodeId);
+      console.log("no node found for: \n", nodePortId.node);
       return "";
     }
 
@@ -95,7 +101,7 @@ void main() {
       case "float": {
         const data = node.data as unknown as FloatData;
         declarations.add(`float ${node.id} = ${data.value};`);
-        break;
+        return node.id;
       }
       case "mathOp": {
         const data = node.data as unknown as MathOpData;
@@ -108,9 +114,8 @@ void main() {
         const b = this.codeGen(inputs.b, declarations, code);
 
         const generatedCode = `float ${node.id} = ${a} ${data.operation} ${b};`;
-        code.push(generatedCode);
-
-        break;
+        declarations.add(generatedCode);
+        return node.id;
       }
       case "vec2": {
         const data = node.data as unknown as Vec2Data;
@@ -120,9 +125,9 @@ void main() {
             data[k] = this.codeGen(v, declarations, code);
           }
         }
-        const generatedCode = `vec2 ${node.id} = vec2(${data.x}, ${data.y});`;
-        code.push(generatedCode);
-        break;
+        const generatedCode = `const vec2 ${node.id} = vec2(${data.x}, ${data.y});`;
+        declarations.add(generatedCode);
+        return node.id;
       }
       case "vec3": {
         const data = node.data as unknown as Vec3Data;
@@ -132,9 +137,9 @@ void main() {
             data[k] = this.codeGen(v, declarations, code);
           }
         }
-        const generatedCode = `vec3 ${node.id} = vec3(${data.r}, ${data.g}, ${data.b});`;
-        code.push(generatedCode);
-        break;
+        const generatedCode = `const vec3 ${node.id} = vec3(${data.r}, ${data.g}, ${data.b});`;
+        declarations.add(generatedCode);
+        return node.id;
       }
       case "vec4": {
         const data = node.data as unknown as Vec4Data;
@@ -144,9 +149,9 @@ void main() {
             data[k] = this.codeGen(v, declarations, code);
           }
         }
-        const generatedCode = `vec4 ${node.id} = vec4(${data.r}, ${data.g}, ${data.b}, ${data.a});`;
-        code.push(generatedCode);
-        break;
+        const generatedCode = `const vec4 ${node.id} = vec4(${data.r}, ${data.g}, ${data.b}, ${data.a});`;
+        declarations.add(generatedCode);
+        return node.id;
       }
       case "noise2d": {
         const stored = node.data as unknown as Noise2DData;
@@ -180,6 +185,15 @@ void main() {
       }
       case "uv": {
         return "vUv";
+      }
+      case "decompose": {
+        const input = this.inputsById.get(node.id)?.vec;
+        if (!input) return "";
+
+        const vec = this.codeGen(input, declarations, code);
+        const varName = `${node.id}_${nodePortId.port}`;
+        declarations.add(`const float ${varName} = ${vec}.${nodePortId.port};`);
+        return varName;
       }
 
       default:
