@@ -10,7 +10,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   shaderpass-caddy:
-    image: ghcr.io/design0r/shaderpass:${GIT_COMMIT_HASH:-latest}
+    image: ghcr.io/the-apic/shaderpass:${GIT_COMMIT_HASH:-latest}
     restart: unless-stopped
     expose:
       - 8000

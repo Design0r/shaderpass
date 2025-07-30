@@ -50,5 +50,5 @@ jobs:
           file: infrastructure/shaderpass/Dockerfile
           push: true
           tags: |
-            ghcr.io/design0r/shaderpass:latest
-            ghcr.io/design0r/shaderpass:${{ github.sha }}
+            ghcr.io/the-apic/shaderpass:latest
+            ghcr.io/the-apic/shaderpass:${{ github.sha }}
