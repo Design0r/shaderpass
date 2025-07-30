@@ -2,15 +2,15 @@ import { Handle, Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
+import { LimitHandle } from "../../handles/Handle";
 import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
-import { LimitHandle } from "../../handles/Handle";
 
 export interface Noise2DData {
   name: string;
-  frequency: number;
-  time: number;
-  octaves: number;
+  frequency: string;
+  time: string;
+  octaves: string;
 }
 
 export interface Noise2DProps {

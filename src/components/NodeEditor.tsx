@@ -11,9 +11,10 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useCallback, useRef, type JSX, type ReactElement } from "react";
 import { shallow } from "zustand/shallow";
-import { useStore, type StoreState } from "../state";
 import { ShaderGenerator } from "../shader/shaderGenerator";
 import { loadTemplate } from "../shader/templateLoader";
+import { useStore, type StoreState } from "../state";
+import type { NodeData } from "../types/nodeData";
 
 const selector = (store: StoreState) => ({
   nodes: store.nodes,
@@ -23,8 +24,8 @@ const selector = (store: StoreState) => ({
   onConnect: store.addEdge,
   nodeTypes: Object.fromEntries(
     Object.values(store.nodeTypes).flatMap((cat) =>
-      cat.nodes.map(({ name, node }) => [name, node] as const),
-    ),
+      cat.nodes.map(({ name, node }) => [name, node] as const)
+    )
   ) as Record<string, React.ComponentType<any>>,
   selectNode: store.selectNode,
   reconnectEdge: store.reconnectEdge,
@@ -48,7 +49,7 @@ export function NodeEditor({
       edgeReconnectSuccessful.current = true;
       store.reconnectEdge(oldEdge, connection);
     },
-    [reconnectEdge],
+    [reconnectEdge]
   );
 
   const onReconnectEnd = useCallback(
@@ -58,7 +59,7 @@ export function NodeEditor({
       }
       edgeReconnectSuccessful.current = true;
     },
-    [store.removeEdge],
+    [store.removeEdge]
   );
 
   return (
@@ -81,7 +82,10 @@ export function NodeEditor({
         <button
           className="btn btn-primary"
           onClick={() => {
-            const s = new ShaderGenerator(store.nodes, store.edges);
+            const s = new ShaderGenerator(
+              store.nodes as NodeData[],
+              store.edges
+            );
             const result = s.generate();
             const data = {
               MATERIAL_NAME: "MyMaterial",

@@ -1,0 +1,10 @@
+{
+  auto_https off
+}
+
+:8003 {
+  root * /srv
+  file_server {
+    index index.html
+  }
+}

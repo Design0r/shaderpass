@@ -7,7 +7,7 @@ import { BaseNode } from "../BaseNode";
 
 export interface BooleanData {
   name: string;
-  value: boolean;
+  value: string;
 }
 
 export interface BooleanProps {

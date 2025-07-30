@@ -1,11 +1,11 @@
 import type { ChangeEvent, JSX } from "react";
-import { useStore, type StoreState } from "../state";
 import { shallow } from "zustand/shallow";
+import { useStore, type StoreState } from "../state";
 import { attributeSchemas, type FieldType } from "../types/attributeSchemas";
 
+import type { Node } from "@xyflow/react";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
-import type { Node } from "@xyflow/react";
 
 const selector = (state: StoreState) => ({
   selectedNode: state.selectedNode,
@@ -69,7 +69,7 @@ export function AttributeField({
   }, 500);
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const raw = e.target.value;
     setDraft(raw);
@@ -111,7 +111,7 @@ export function AttributeField({
         className="checkbox"
         checked={Boolean(fieldValue)}
         onChange={(e) => {
-          onUpdate(nodeId, { [fieldKey]: e.target.checked });
+          onUpdate(node.id, { [fieldKey]: e.target.checked });
         }}
       />
     );

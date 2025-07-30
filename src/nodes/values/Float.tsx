@@ -7,7 +7,7 @@ import { BaseNode } from "../BaseNode";
 
 export interface FloatData {
   name: string;
-  value: number;
+  value: string;
 }
 
 export interface FloatProps {

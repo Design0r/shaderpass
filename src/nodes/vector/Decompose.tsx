@@ -4,7 +4,6 @@ import { shallow } from "zustand/shallow";
 
 import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
-import { LimitHandle } from "../../handles/Handle";
 
 export interface Vec4Data {
   name: string;

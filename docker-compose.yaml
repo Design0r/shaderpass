@@ -1,0 +1,34 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "30"
+      - "--rolling-restart"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  shaderpass-caddy:
+    image: ghcr.io/design0r/shaderpass:${GIT_COMMIT_HASH:-latest}
+    restart: unless-stopped
+    expose:
+      - 8000
+    volumes:
+      - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - caddy_shared
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+volumes:
+  db:
+  caddy_data:
+  caddy_config:
+
+
+networks:
+  caddy_shared:
+    external: true

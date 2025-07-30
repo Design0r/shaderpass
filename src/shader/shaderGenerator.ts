@@ -1,11 +1,10 @@
 import type { Edge } from "@xyflow/react";
-import type { FloatData } from "../nodes/values/Float";
 import type { MathOpData } from "../nodes/math/MathOp";
-import type { Vec2Data, Vec3Data, Vec4Data } from "../nodes/values/Vec";
 import type { Noise2DData } from "../nodes/noise/Noise2D";
+import type { FloatData } from "../nodes/values/Float";
+import type { Vec2Data, Vec3Data, Vec4Data } from "../nodes/values/Vec";
+import type { NodeData } from "../types/nodeData";
 import { FBM_2D, NOISE_2D } from "./noise/noise2d/noise2d";
-
-type NodeData = { id: string; type: string; data: Record<string, any> };
 
 export class ShaderGenerator {
   private nodesById: Map<string, NodeData>;
@@ -89,7 +88,7 @@ void main() {
   private codeGen(
     nodePortId: { node: string; port: string },
     declarations: Set<string>,
-    code: string[],
+    code: string[]
   ): string {
     const node = this.nodesById.get(nodePortId.node);
     if (!node) {
@@ -122,7 +121,7 @@ void main() {
         const inputs = this.inputsById.get(node.id);
         if (inputs) {
           for (const [k, v] of Object.entries(inputs)) {
-            data[k] = this.codeGen(v, declarations, code);
+            data[k as keyof Vec2Data] = this.codeGen(v, declarations, code);
           }
         }
         const generatedCode = `const vec2 ${node.id} = vec2(${data.x}, ${data.y});`;
@@ -134,7 +133,7 @@ void main() {
         const inputs = this.inputsById.get(node.id);
         if (inputs) {
           for (const [k, v] of Object.entries(inputs)) {
-            data[k] = this.codeGen(v, declarations, code);
+            data[k as keyof Vec3Data] = this.codeGen(v, declarations, code);
           }
         }
         const generatedCode = `const vec3 ${node.id} = vec3(${data.r}, ${data.g}, ${data.b});`;
@@ -146,7 +145,7 @@ void main() {
         const inputs = this.inputsById.get(node.id);
         if (inputs) {
           for (const [k, v] of Object.entries(inputs)) {
-            data[k] = this.codeGen(v, declarations, code);
+            data[k as keyof Vec4Data] = this.codeGen(v, declarations, code);
           }
         }
         const generatedCode = `const vec4 ${node.id} = vec4(${data.r}, ${data.g}, ${data.b}, ${data.a});`;
