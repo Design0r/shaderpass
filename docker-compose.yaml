@@ -12,10 +12,7 @@ services:
   shaderpass-caddy:
     image: ghcr.io/the-apic/shaderpass:${GIT_COMMIT_HASH:-latest}
     restart: unless-stopped
-    expose:
-      - 8003
     volumes:
-      - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
     networks:
@@ -24,7 +21,6 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
 volumes:
-  db:
   caddy_data:
   caddy_config:
 
