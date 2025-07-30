@@ -13,7 +13,7 @@ services:
     image: ghcr.io/the-apic/shaderpass:${GIT_COMMIT_HASH:-latest}
     restart: unless-stopped
     expose:
-      - 8000
+      - 8003
     volumes:
       - ./infrastructure/caddy/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
