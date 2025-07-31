@@ -70,12 +70,17 @@ void main() {
   const matRef = useRef<ShaderMaterial>(null!);
 
   useEffect(() => {
-    const { vertex, fragment } = new ShaderGenerator(
-      shaderNodes,
-      edges,
-    ).generate();
-    if (vertex) setVert(vertex);
-    if (fragment) setFrag(fragment);
+    try {
+      const { vertex, fragment } = new ShaderGenerator(
+        shaderNodes,
+        edges,
+      ).generate();
+
+      if (vertex) setVert(vertex);
+      if (fragment) setFrag(fragment);
+    } catch (error) {
+      return;
+    }
   }, [edges, nodeDataJSON]);
 
   useEffect(() => {

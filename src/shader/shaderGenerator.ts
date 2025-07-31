@@ -16,10 +16,10 @@ export class ShaderGenerator {
   private nodes: NodeData[];
 
   private fragDeclarations = new Set<string>();
-  private fragCode: string[] = [];
+  private fragCode = new Set<string>();
 
   private vertDeclarations = new Set<string>();
-  private vertCode: string[] = [];
+  private vertCode = new Set<string>();
 
   constructor(nodes: NodeData[], edges: Edge[]) {
     this.nodesById = new Map<string, NodeData>();
@@ -85,16 +85,16 @@ void main() {
   private codeGen(
     nodePortId: Input,
     declarations: Set<string>,
-    code: string[]
+    code: Set<string>,
   ): string {
-    const node = this.nodesById.get(nodePortId.node);
+    const node = this.nodesById.get(nodePortId?.node);
     if (!node)
-      throw new Error(`node with id ${nodePortId.node} does not exist.`);
+      throw new Error(`node with id ${nodePortId?.node} does not exist.`);
 
     switch (node.type) {
       case "float": {
         const data = node.data as FloatData;
-        declarations.add(`float ${node.id} = ${data.value};`);
+        code.add(`float ${node.id} = ${data.value};`);
         break;
       }
       case "mathOp": {
@@ -102,52 +102,46 @@ void main() {
         const inputs = this.inputsById.get(node.id);
         if (!inputs) throw new Error(`no inputs found for: ${node}`);
 
+        const a_node = this.nodesById.get(inputs.a.node);
+        if (!a_node) throw new Error(`no input found for: ${node}`);
+        const type = a_node.type.startsWith("vec") ? a_node.type : "float";
+
         const a = this.codeGen(inputs.a, declarations, code);
         const b = this.codeGen(inputs.b, declarations, code);
 
-        declarations.add(`float ${node.id} = ${a} ${data.operation} ${b};`);
+        code.add(`${type} ${node.id} = ${a} ${data.operation} ${b};`);
         break;
       }
       case "vec2": {
-        const data = node.data as Vec2Data;
+        const data = node.data as Record<keyof Vec2Data, string>;
         const inputs = this.inputsById.get(node.id);
-        if (inputs) {
-          for (const [k, v] of Object.entries(inputs)) {
-            data[k as keyof Vec2Data] = this.codeGen(v, declarations, code);
-          }
-        }
-        declarations.add(`const vec2 ${node.id} = vec2(${data.x}, ${data.y});`);
+        this.scanInputs(inputs, data, declarations, code);
+
+        code.add(`vec2 ${node.id} = vec2(${data.x}, ${data.y});`);
         break;
       }
       case "vec3": {
-        const data = node.data as Vec3Data;
+        const data = node.data as Record<keyof Vec3Data, string>;
         const inputs = this.inputsById.get(node.id);
         this.scanInputs(inputs, data, declarations, code);
-        const generatedCode = `const vec3 ${node.id} = vec3(${data.r}, ${data.g}, ${data.b});`;
-        declarations.add(generatedCode);
+
+        const generatedCode = `vec3 ${node.id} = vec3(${data.r}, ${data.g}, ${data.b});`;
+        code.add(generatedCode);
         break;
       }
       case "vec4": {
-        const data = node.data as Vec4Data;
+        const data = node.data as Record<keyof Vec4Data, string>;
         const inputs = this.inputsById.get(node.id);
-        if (inputs) {
-          for (const [k, v] of Object.entries(inputs)) {
-            data[k as keyof Vec4Data] = this.codeGen(v, declarations, code);
-          }
-        }
-        const generatedCode = `const vec4 ${node.id} = vec4(${data.r}, ${data.g}, ${data.b}, ${data.a});`;
-        declarations.add(generatedCode);
+        this.scanInputs(inputs, data, declarations, code);
+
+        const generatedCode = `vec4 ${node.id} = vec4(${data.r}, ${data.g}, ${data.b}, ${data.a});`;
+        code.add(generatedCode);
         break;
       }
       case "noise2d": {
-        const data = node.data as Noise2DData;
+        const data = node.data as Record<keyof Noise2DData, string>;
         const inputs = this.inputsById.get(node.id) || {};
-
-        if (inputs) {
-          for (const [k, v] of Object.entries(inputs)) {
-            data[k as keyof Noise2DData] = this.codeGen(v, declarations, code);
-          }
-        }
+        this.scanInputs(inputs, data, declarations, code);
 
         let generatedCode: string;
         if (inputs.time) {
@@ -159,8 +153,8 @@ void main() {
 
         declarations.add(NOISE_2D);
         declarations.add(FBM_2D);
+        code.add(generatedCode);
 
-        code.push(generatedCode);
         break;
       }
       case "time": {
@@ -176,7 +170,7 @@ void main() {
 
         const vec = this.codeGen(input, declarations, code);
         const varName = `${node.id}_${nodePortId.port}`;
-        declarations.add(`const float ${varName} = ${vec}.${nodePortId.port};`);
+        code.add(`float ${varName} = ${vec}.${nodePortId.port};`);
         return varName;
       }
 
@@ -187,15 +181,15 @@ void main() {
     return node.id;
   }
 
-  private scanInputs<T>(
+  private scanInputs(
     inputs: InputsById | undefined,
-    data: T,
+    data: Record<string, string>,
     declarations: Set<string>,
-    code: string[]
+    code: Set<string>,
   ) {
     if (!inputs) return;
     for (const [k, v] of Object.entries(inputs)) {
-      data[k as keyof T] = this.codeGen(v, declarations, code);
+      data[k] = this.codeGen(v, declarations, code);
     }
   }
 }
