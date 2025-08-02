@@ -10,6 +10,9 @@ import { Time } from "../nodes/inputs/Time";
 import { Boolean } from "../nodes/values/Boolean";
 import { Uv } from "../nodes/inputs/Uv";
 import { Decompose } from "../nodes/vector/Decompose";
+import { Simplex2D } from "../nodes/noise/Simplex2D";
+import { Simplex3D } from "../nodes/noise/Simplex3D";
+import { Floor } from "../nodes/math/Floor";
 
 export type ShaderPassNodes = Record<string, ShaderPassCategory>;
 
@@ -55,12 +58,19 @@ export const NodeTypes = {
   math: {
     color: "#faa",
     label: "Math",
-    nodes: [{ name: "mathOp", label: "Math Op", node: MathOp }],
+    nodes: [
+      { name: "mathOp", label: "Math Op", node: MathOp },
+      { name: "floor", label: "Floor", node: Floor },
+    ],
   },
   noise: {
     color: "#999",
     label: "Noise",
-    nodes: [{ name: "noise2d", label: "Noise 2D", node: Noise2D }],
+    nodes: [
+      { name: "noise2d", label: "Noise 2D", node: Noise2D },
+      { name: "simplex2d", label: "Simplex 2D", node: Simplex2D },
+      { name: "simplex3d", label: "Simplex 3D", node: Simplex3D },
+    ],
   },
   inputs: {
     color: "#fff",

@@ -21,6 +21,7 @@ export interface StoreState {
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   reconnectEdge: (oldEdge: Edge, connection: Connection) => void;
+  setData: (nodes: Node[], edges: Edge[]) => void;
   addEdge: (data: Omit<Edge, "id">) => void;
   removeEdge: (id: Edge["id"]) => void;
   updateNode: (id: Node["id"], data: Partial<Node["data"]>) => void;
@@ -92,6 +93,10 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
     set({ selectedNode: undefined });
   },
 
+  setData(nodes, edges) {
+    set({ nodes: nodes, edges: edges });
+  },
+
   createNode(type: string) {
     const id = idGen();
     const position = { x: 0, y: 0 };
@@ -154,6 +159,21 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
       }
       case "decompose": {
         const data = { name: "Decompose" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "simplex2d": {
+        const data = { name: "Simplex 2D" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "simplex3d": {
+        const data = { name: "Simplex 3D" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "floor": {
+        const data = { name: "Floor" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }

@@ -19,13 +19,14 @@ import type { NodeData } from "../types/nodeData";
 const selector = (store: StoreState) => ({
   nodes: store.nodes,
   edges: store.edges,
+  setData: store.setData,
   onNodesChange: store.onNodesChange,
   onEdgesChange: store.onEdgesChange,
   onConnect: store.addEdge,
   nodeTypes: Object.fromEntries(
     Object.values(store.nodeTypes).flatMap((cat) =>
-      cat.nodes.map(({ name, node }) => [name, node] as const)
-    )
+      cat.nodes.map(({ name, node }) => [name, node] as const),
+    ),
   ) as Record<string, React.ComponentType<any>>,
   selectNode: store.selectNode,
   reconnectEdge: store.reconnectEdge,
@@ -49,7 +50,7 @@ export function NodeEditor({
       edgeReconnectSuccessful.current = true;
       store.reconnectEdge(oldEdge, connection);
     },
-    [reconnectEdge]
+    [reconnectEdge],
   );
 
   const onReconnectEnd = useCallback(
@@ -59,7 +60,7 @@ export function NodeEditor({
       }
       edgeReconnectSuccessful.current = true;
     },
-    [store.removeEdge]
+    [store.removeEdge],
   );
 
   return (
@@ -78,13 +79,13 @@ export function NodeEditor({
       onNodeClick={(_, n) => store.selectNode(n.id)}
       fitView
     >
-      <Panel position="top-left">
+      <Panel className="space-x-2" position="top-left">
         <button
           className="btn btn-primary"
           onClick={() => {
             const s = new ShaderGenerator(
               store.nodes as NodeData[],
-              store.edges
+              store.edges,
             );
             const result = s.generate();
             const data = {
@@ -100,6 +101,28 @@ export function NodeEditor({
           }}
         >
           Export
+        </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            const data = { nodes: store.nodes, edges: store.edges };
+            const stringify = JSON.stringify(data);
+            localStorage.setItem("scene", stringify);
+          }}
+        >
+          Save
+        </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            const storage = localStorage.getItem("scene");
+            if (!storage) return;
+            const data = JSON.parse(storage);
+            console.log(data);
+            store.setData(data.nodes, data.edges);
+          }}
+        >
+          Load
         </button>
       </Panel>
       <Controls />

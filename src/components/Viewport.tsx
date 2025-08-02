@@ -23,7 +23,7 @@ export function Viewport(): JSX.Element {
           type="checkbox"
           className="toggle toggle-error"
           checked={debug}
-          onClick={() => setDebug((d) => !d)}
+          onClick={(e: any) => setDebug(e.target.checked)}
         />
       </label>
       <Canvas shadows>{debug ? <TestScene /> : <Scene />}</Canvas>

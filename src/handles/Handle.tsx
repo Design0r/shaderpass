@@ -5,14 +5,15 @@ export function LimitHandle(
   props: HandleProps &
     Omit<HTMLAttributes<HTMLDivElement>, "id"> & { connectionCount: number },
 ): JSX.Element {
+  const { connectionCount, ...rest } = props;
   const connections = useNodeConnections({
-    handleType: props.type,
-    handleId: props.id || undefined,
+    handleType: rest.type,
+    handleId: rest.id || undefined,
   });
 
   return (
     <Handle
-      {...props}
+      {...rest}
       isConnectable={connections.length < props.connectionCount}
     />
   );

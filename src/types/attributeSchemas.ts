@@ -60,4 +60,7 @@ export const attributeSchemas: NodeAttributeSchema = {
   time: [{ type: "string", label: "Name" }],
   uv: [{ type: "string", label: "Name" }],
   decompose: [{ type: "string", label: "Name" }],
+  simplex2d: [{ type: "string", label: "name" }],
+  simplex3d: [{ type: "string", label: "name" }],
+  floor: [{ type: "string", label: "Name" }],
 };

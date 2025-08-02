@@ -5,6 +5,11 @@ import type { FloatData } from "../nodes/values/Float";
 import type { Vec2Data, Vec3Data, Vec4Data } from "../nodes/values/Vec";
 import type { NodeData } from "../types/nodeData";
 import { FBM_2D, NOISE_2D } from "./noise/noise2d/noise2d";
+import type { Simplex2DData } from "../nodes/noise/Simplex2D";
+import { SIMPLEX_2D } from "./noise/simplex2d/simplex2d";
+import type { Simplex3DData } from "../nodes/noise/Simplex3D";
+import { SIMPLEX_3D } from "./noise/simplex3d/simplex3d";
+import type { FloorData } from "../nodes/math/Floor";
 
 type Input = { node: string; port: string };
 type InputsById = Record<string, Input>;
@@ -59,8 +64,8 @@ ${[...this.vertDeclarations].join("\n")}
 void main() {
     vUv = uv;
     ${[...this.vertCode].join("\n    ")}
-    vec3 disp = ${vertexTree?.node || "1.0"} * normal;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position + disp,1.0);
+    vec3 disp = ${vertexTree?.node || "vec3(0.0)"} * normal;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4((position${vertexTree?.node ? "+ disp" : ""}),1.0);
 }
 `;
 
@@ -94,7 +99,7 @@ void main() {
     switch (node.type) {
       case "float": {
         const data = node.data as FloatData;
-        code.add(`float ${node.id} = ${data.value};`);
+        code.add(`float ${node.id} = ${parseFloat(data.value)};`);
         break;
       }
       case "mathOp": {
@@ -102,9 +107,7 @@ void main() {
         const inputs = this.inputsById.get(node.id);
         if (!inputs) throw new Error(`no inputs found for: ${node}`);
 
-        const a_node = this.nodesById.get(inputs.a.node);
-        if (!a_node) throw new Error(`no input found for: ${node}`);
-        const type = a_node.type.startsWith("vec") ? a_node.type : "float";
+        let type = this.detectInputType(node);
 
         const a = this.codeGen(inputs.a, declarations, code);
         const b = this.codeGen(inputs.b, declarations, code);
@@ -173,6 +176,39 @@ void main() {
         code.add(`float ${varName} = ${vec}.${nodePortId.port};`);
         return varName;
       }
+      case "simplex2d": {
+        const data = node.data as Record<keyof Simplex2DData, string>;
+        const inputs = this.inputsById.get(node.id) || {};
+        this.scanInputs(inputs, data, declarations, code);
+
+        declarations.add(SIMPLEX_2D);
+        code.add(`float ${node.id} = simplex2d(${inputs.input.node});`);
+        break;
+      }
+      case "simplex3d": {
+        const data = node.data as Record<keyof Simplex3DData, string>;
+        const inputs = this.inputsById.get(node.id) || {};
+        this.scanInputs(inputs, data, declarations, code);
+
+        declarations.add(SIMPLEX_3D);
+        code.add(`float ${node.id} = simplex3d(${inputs.input.node});`);
+        break;
+      }
+      case "floor": {
+        const data = node.data as Record<keyof FloorData, string>;
+        const inputs = this.inputsById.get(node.id) || {};
+        this.scanInputs(inputs, data, declarations, code);
+
+        const inputNode = this.nodesById.get(inputs.input.node);
+        if (!inputNode)
+          throw new Error(`no input found for floor node ${node.id}`);
+
+        const type = this.detectInputType(node);
+
+        declarations.add(SIMPLEX_3D);
+        code.add(`${type} ${node.id} = floor(${inputs.input.node});`);
+        break;
+      }
 
       default:
         throw new Error(`Error: invalid node type: ${node.type}`);
@@ -190,6 +226,28 @@ void main() {
     if (!inputs) return;
     for (const [k, v] of Object.entries(inputs)) {
       data[k] = this.codeGen(v, declarations, code);
+    }
+  }
+
+  private detectInputType(rootNode: NodeData): string | undefined {
+    const stack = [rootNode];
+
+    while (true) {
+      const curr = stack.pop();
+      if (!curr) break;
+
+      const inputs = this.inputsById.get(curr.id);
+      if (!inputs) break;
+
+      for (const [_, v] of Object.entries(inputs)) {
+        const node = this.nodesById.get(v.node);
+        if (!node) continue;
+        if (node.type.startsWith("vec") || node.type == "float") {
+          return node.type;
+        }
+
+        stack.push(node);
+      }
     }
   }
 }
