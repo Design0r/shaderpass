@@ -78,6 +78,8 @@ export function NodeEditor({
       proOptions={{ hideAttribution: true }}
       onNodeClick={(_, n) => store.selectNode(n.id)}
       onPaneClick={() => store.selectNode("")}
+      maxZoom={5}
+      minZoom={0}
       fitView
     >
       <Panel className="space-x-2" position="top-left">
