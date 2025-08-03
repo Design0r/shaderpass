@@ -1,10 +1,10 @@
-import { Handle, Position } from "@xyflow/react";
+import { Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
 import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
-import { LimitHandle } from "../../handles/Handle";
+import { LimitHandle, StyledHandle } from "../../handles/Handle";
 
 export interface FloorData {
   name: string;
@@ -41,7 +41,7 @@ export function Floor({ id, data }: FloorProps): JSX.Element {
         position={Position.Left}
         connectionCount={1}
       />
-      <Handle id={"out"} type="source" position={Position.Right} />
+      <StyledHandle id={"out"} type="source" position={Position.Right} />
     </BaseNode>
   );
 }

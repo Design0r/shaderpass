@@ -77,6 +77,7 @@ export function NodeEditor({
       nodeTypes={store.nodeTypes}
       proOptions={{ hideAttribution: true }}
       onNodeClick={(_, n) => store.selectNode(n.id)}
+      onPaneClick={() => store.selectNode("")}
       fitView
     >
       <Panel className="space-x-2" position="top-left">

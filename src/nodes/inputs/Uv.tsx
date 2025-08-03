@@ -1,9 +1,10 @@
-import { Handle, Position } from "@xyflow/react";
+import { Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
 import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
+import { StyledHandle } from "../../handles/Handle";
 
 export interface UvData {
   name: string;
@@ -19,15 +20,15 @@ const selector = (id: string) => (store: StoreState) => ({
   nodeColor: store.nodeTypes.inputs.color,
 });
 
-export function Uv({ id }: UvProps): JSX.Element {
+export function Uv({ id, data }: UvProps): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode name="UV" isSelected={isSelected} accentColor={nodeColor}>
+    <BaseNode name={data.name} isSelected={isSelected} accentColor={nodeColor}>
       <div className="flex justify-end items-center">
         <span>Out</span>
       </div>
-      <Handle type="source" position={Position.Right} />
+      <StyledHandle type="source" position={Position.Right} />
     </BaseNode>
   );
 }

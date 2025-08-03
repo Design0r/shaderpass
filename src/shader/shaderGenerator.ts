@@ -64,8 +64,17 @@ ${[...this.vertDeclarations].join("\n")}
 void main() {
     vUv = uv;
     ${[...this.vertCode].join("\n    ")}
-    vec3 disp = ${vertexTree?.node || "vec3(0.0)"} * normal;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4((position${vertexTree?.node ? "+ disp" : ""}),1.0);
+
+    // get displacement amount (fallback to 0.0)
+    vec3 rawDisp = ${vertexTree?.node ? vertexTree.node : "vec3(0.0)"};
+
+    // displace along the (normalized) normal
+    vec3 n = normalize(normal);
+    vec3 disp = n * dot(rawDisp, normal);
+
+    // apply displacement in object space, then transform
+    vec4 mvPosition = modelViewMatrix * vec4(position + disp, 1.0);
+    gl_Position = projectionMatrix * mvPosition;
 }
 `;
 

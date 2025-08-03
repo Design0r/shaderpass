@@ -62,7 +62,11 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
 
   addEdge(data) {
     const id = nanoid(6);
-    const edge: Edge = { id, ...data };
+    const edge: Edge = {
+      id,
+      ...data,
+      style: { stroke: "fff", strokeWidth: 2 },
+    };
     set({ edges: [edge, ...get().edges] });
   },
 

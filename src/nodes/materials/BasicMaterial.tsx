@@ -20,14 +20,10 @@ const selector = (id: string) => (store: StoreState) => ({
   nodeColor: store.nodeTypes.materials.color,
 });
 
-export function BasicMaterial({ id }: BasicMaterialProps): JSX.Element {
+export function BasicMaterial({ id, data }: BasicMaterialProps): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
   return (
-    <BaseNode
-      isSelected={isSelected}
-      name="Basic Material"
-      accentColor={nodeColor}
-    >
+    <BaseNode isSelected={isSelected} name={data.name} accentColor={nodeColor}>
       <div className="flex flex-col">
         <span>Displacement</span>
         <span>Color</span>

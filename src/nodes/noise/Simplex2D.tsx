@@ -1,8 +1,8 @@
-import { Handle, Position } from "@xyflow/react";
+import { Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
-import { LimitHandle } from "../../handles/Handle";
+import { LimitHandle, StyledHandle } from "../../handles/Handle";
 import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
 
@@ -20,11 +20,11 @@ const selector = (id: string) => (store: StoreState) => ({
   nodeColor: store.nodeTypes.noise.color,
 });
 
-export function Simplex2D({ id }: Simplex2DProps): JSX.Element {
+export function Simplex2D({ id, data }: Simplex2DProps): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Simplex2D" accentColor={nodeColor}>
+    <BaseNode isSelected={isSelected} name={data.name} accentColor={nodeColor}>
       <div className="flex justify-between">
         <div className="flex flex-col">
           <span>Vec2</span>
@@ -40,7 +40,7 @@ export function Simplex2D({ id }: Simplex2DProps): JSX.Element {
         position={Position.Left}
         connectionCount={1}
       />
-      <Handle id="out" type="source" position={Position.Right} />
+      <StyledHandle id="out" type="source" position={Position.Right} />
     </BaseNode>
   );
 }

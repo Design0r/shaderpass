@@ -1,11 +1,12 @@
-import { Handle, Position } from "@xyflow/react";
+import { Position } from "@xyflow/react";
 import type { JSX } from "react";
 import { shallow } from "zustand/shallow";
 
 import { useStore, type StoreState } from "../../state";
 import { BaseNode } from "../BaseNode";
+import { StyledHandle } from "../../handles/Handle";
 
-export interface Vec4Data {
+export interface DecomposeData {
   name: string;
   r: string;
   g: string;
@@ -13,9 +14,9 @@ export interface Vec4Data {
   a: string;
 }
 
-export interface Vec4Props {
+export interface DecomposeProps {
   id: string;
-  data: Vec4Data;
+  data: DecomposeData;
 }
 
 const selector = (id: string) => (state: StoreState) => ({
@@ -23,11 +24,11 @@ const selector = (id: string) => (state: StoreState) => ({
   nodeColor: state.nodeTypes.vector.color,
 });
 
-export function Decompose({ id }: Vec4Props): JSX.Element {
+export function Decompose({ id, data }: DecomposeProps): JSX.Element {
   const { isSelected, nodeColor } = useStore(selector(id), shallow);
 
   return (
-    <BaseNode isSelected={isSelected} name="Decompose" accentColor={nodeColor}>
+    <BaseNode isSelected={isSelected} name={data.name} accentColor={nodeColor}>
       <div className="flex justify-between">
         <div>
           <span>Vec</span>
@@ -39,31 +40,31 @@ export function Decompose({ id }: Vec4Props): JSX.Element {
           <span>A</span>
         </div>
       </div>
-      <Handle
+      <StyledHandle
         id="r"
         style={{ top: "37%" }}
         type="source"
         position={Position.Right}
       />
-      <Handle
+      <StyledHandle
         id="g"
         style={{ top: "53%" }}
         type="source"
         position={Position.Right}
       />
-      <Handle
+      <StyledHandle
         id="b"
         style={{ top: "69%" }}
         type="source"
         position={Position.Right}
       />
-      <Handle
+      <StyledHandle
         id="a"
         style={{ top: "85%" }}
         type="source"
         position={Position.Right}
       />
-      <Handle id="vec" type="target" position={Position.Left} />
+      <StyledHandle id="vec" type="target" position={Position.Left} />
     </BaseNode>
   );
 }

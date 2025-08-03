@@ -23,7 +23,7 @@ export function Viewport(): JSX.Element {
           type="checkbox"
           className="toggle toggle-error"
           checked={debug}
-          onClick={(e: any) => setDebug(e.target.checked)}
+          onChange={(e: any) => setDebug(e.target.checked)}
         />
       </label>
       <Canvas shadows>{debug ? <TestScene /> : <Scene />}</Canvas>
@@ -58,7 +58,7 @@ function Scene(): JSX.Element {
   );
   const [frag, setFrag] = useState<string>(`
 void main() {
- gl_FragColor = vec4(1.0,1.0,1.0,1.0);
+ gl_FragColor = vec4(0.6,0.6,1.0,1.0);
 }
 `);
   const [vert, setVert] = useState<string>(`
@@ -79,7 +79,7 @@ void main() {
       if (vertex) setVert(vertex);
       if (fragment) setFrag(fragment);
     } catch (error) {
-      return;
+      console.log("Shader generator failed:", error);
     }
   }, [edges, nodeDataJSON]);
 
@@ -92,16 +92,20 @@ void main() {
   useFrame((_, delta) => {
     if (matRef.current) {
       matRef.current.uniforms.uTime.value += delta;
+    }
+  });
 
+  useEffect(() => {
+    if (matRef.current) {
       matRef.current.vertexShader = vert;
       matRef.current.fragmentShader = frag;
       matRef.current.needsUpdate = true;
     }
-  });
+  }, [vert, frag]);
 
   return (
     <>
-      <Sphere position={[0, 1, 0]} args={[1, 32, 32]}>
+      <Sphere position={[0, 1, 0]} args={[1, 64, 64]}>
         <shaderMaterial
           ref={matRef}
           fragmentShader={frag}

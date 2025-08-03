@@ -12,9 +12,22 @@ export function LimitHandle(
   });
 
   return (
-    <Handle
+    <StyledHandle
       {...rest}
       isConnectable={connections.length < props.connectionCount}
     />
   );
+}
+
+export function StyledHandle({
+  style = {},
+  ...props
+}: HandleProps): JSX.Element {
+  const newStyle: React.CSSProperties = {
+    ...(style ?? {}),
+    width: "10px",
+    height: "10px",
+  };
+
+  return <Handle {...props} style={newStyle} />;
 }

@@ -16,7 +16,11 @@ export function AttributeEditor(): JSX.Element {
   const { selectedNode, updateNode } = useStore(selector, shallow);
 
   if (!selectedNode || !selectedNode.type) {
-    return <div className="p-4">Select a node to edit its attributes.</div>;
+    return (
+      <div className="p-4 space-y-2">
+        <h2 className="text-xl font-bold text-center">Attributes</h2>
+      </div>
+    );
   }
 
   const schema: FieldType[] = attributeSchemas[selectedNode.type] || [];
@@ -25,6 +29,15 @@ export function AttributeEditor(): JSX.Element {
   return (
     <div className="p-4 space-y-2">
       <h2 className="text-xl font-bold text-center">Attributes</h2>
+
+      <div className="flex items-center gap-2 py-1">
+        <label className="w-24 text-right">Type</label>
+        <input
+          className="input flex-1 text-white"
+          disabled
+          value={selectedNode.type}
+        />
+      </div>
       {schema.map((fieldDef) => {
         const key = fieldDef.label.toLowerCase();
         return (
@@ -69,16 +82,13 @@ export function AttributeField({
   }, 500);
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const raw = e.target.value;
     setDraft(raw);
 
     if (type === "enum") {
-      onUpdate(node.id, {
-        [fieldKey]: raw,
-        name: `${node.data.name} ( ${raw} )`,
-      });
+      onUpdate(node.id, { [fieldKey]: raw });
     } else {
       debounced(raw);
     }
