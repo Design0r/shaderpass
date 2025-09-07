@@ -37,15 +37,15 @@ export function Vec2({ id, data }: Vec2Props): JSX.Element {
         </div>
       </div>
       <LimitHandle
-        id="x"
-        style={{ top: "50%" }}
+        style={{ top: "54%" }}
+        id={"x"}
         type="target"
         position={Position.Left}
         connectionCount={1}
       />
       <LimitHandle
-        id="y"
-        style={{ top: "80%" }}
+        style={{ top: "78%" }}
+        id={"y"}
         type="target"
         position={Position.Left}
         connectionCount={1}

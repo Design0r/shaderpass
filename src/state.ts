@@ -158,7 +158,7 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
       }
       case "uv": {
         const data = { name: "UV" };
-        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        set({ nodes: [...get().nodes, { id: "vUv", type, data, position }] });
         break;
       }
       case "decompose": {
@@ -178,6 +178,16 @@ export const useStore = createWithEqualityFn<StoreState>((set, get) => ({
       }
       case "floor": {
         const data = { name: "Floor" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "min": {
+        const data = { name: "Min" };
+        set({ nodes: [...get().nodes, { id, type, data, position }] });
+        break;
+      }
+      case "max": {
+        const data = { name: "Max" };
         set({ nodes: [...get().nodes, { id, type, data, position }] });
         break;
       }

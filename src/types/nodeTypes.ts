@@ -13,6 +13,8 @@ import { Decompose } from "../nodes/vector/Decompose";
 import { Simplex2D } from "../nodes/noise/Simplex2D";
 import { Simplex3D } from "../nodes/noise/Simplex3D";
 import { Floor } from "../nodes/math/Floor";
+import { Min } from "../nodes/math/Min";
+import { Max } from "../nodes/math/Max";
 
 export type ShaderPassNodes = Record<string, ShaderPassCategory>;
 
@@ -61,6 +63,8 @@ export const NodeTypes = {
     nodes: [
       { name: "mathOp", label: "Math Op", node: MathOp },
       { name: "floor", label: "Floor", node: Floor },
+      { name: "min", label: "Min", node: Min },
+      { name: "max", label: "Max", node: Max },
     ],
   },
   noise: {

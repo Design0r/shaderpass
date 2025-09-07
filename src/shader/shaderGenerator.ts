@@ -10,6 +10,7 @@ import { SIMPLEX_2D } from "./noise/simplex2d/simplex2d";
 import type { Simplex3DData } from "../nodes/noise/Simplex3D";
 import { SIMPLEX_3D } from "./noise/simplex3d/simplex3d";
 import type { FloorData } from "../nodes/math/Floor";
+import type { MinData } from "../nodes/math/Min";
 
 type Input = { node: string; port: string };
 type InputsById = Record<string, Input>;
@@ -108,7 +109,7 @@ void main() {
     switch (node.type) {
       case "float": {
         const data = node.data as FloatData;
-        code.add(`float ${node.id} = ${parseFloat(data.value)};`);
+        code.add(`float ${node.id} = ${numOrVar(data.value)};`);
         break;
       }
       case "mathOp": {
@@ -145,6 +146,7 @@ void main() {
         const data = node.data as Record<keyof Vec4Data, string>;
         const inputs = this.inputsById.get(node.id);
         this.scanInputs(inputs, data, declarations, code);
+        console.log(data);
 
         const generatedCode = `vec4 ${node.id} = vec4(${data.r}, ${data.g}, ${data.b}, ${data.a});`;
         code.add(generatedCode);
@@ -218,6 +220,34 @@ void main() {
         code.add(`${type} ${node.id} = floor(${inputs.input.node});`);
         break;
       }
+      case "min": {
+        const data = node.data as Record<keyof MinData, string>;
+        const inputs = this.inputsById.get(node.id) || {};
+        this.scanInputs(inputs, data, declarations, code);
+
+        const inputA = inputs.inputA.node;
+        const inputB = inputs.inputB.node;
+        if (!inputA || !inputB)
+          throw new Error(`no input found for min node ${node.id}`);
+
+        const type = this.detectInputType(node);
+        code.add(`${type} ${node.id} = min(${inputA}, ${inputB});`);
+        break;
+      }
+      case "max": {
+        const data = node.data as Record<keyof MinData, string>;
+        const inputs = this.inputsById.get(node.id) || {};
+        this.scanInputs(inputs, data, declarations, code);
+
+        const inputA = inputs.inputA.node;
+        const inputB = inputs.inputB.node;
+        if (!inputA || !inputB)
+          throw new Error(`no input found for max node ${node.id}`);
+
+        const type = this.detectInputType(node);
+        code.add(`${type} ${node.id} = max(${inputA}, ${inputB});`);
+        break;
+      }
 
       default:
         throw new Error(`Error: invalid node type: ${node.type}`);
@@ -232,9 +262,15 @@ void main() {
     declarations: Set<string>,
     code: Set<string>,
   ) {
-    if (!inputs) return;
+    if (!inputs) {
+      for (const [k, v] of Object.entries(data)) {
+        data[k] = numOrVar(v);
+      }
+      return;
+    }
+
     for (const [k, v] of Object.entries(inputs)) {
-      data[k] = this.codeGen(v, declarations, code);
+      data[k] = numOrVar(this.codeGen(v, declarations, code));
     }
   }
 
@@ -259,4 +295,13 @@ void main() {
       }
     }
   }
+}
+
+function numOrVar(value: string): string {
+  if (isNaN(value as any)) return value;
+  if (value.includes(".")) {
+    return value;
+  }
+
+  return value + ".0";
 }

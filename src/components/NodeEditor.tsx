@@ -100,6 +100,7 @@ export function NodeEditor({
               VERTEX_SHADER: result.vertex,
             };
             const template = loadTemplate(data);
+            console.log("---- template ----\n", template);
             navigator.clipboard.writeText(template);
           }}
         >
